@@ -43,6 +43,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .login-card{width:460px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius3);
   padding:40px;box-shadow:var(--shadow-lg);position:relative;z-index:1;animation:fadeUp .45s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg)}}
 .login-head{text-align:center;margin-bottom:30px;}
 .login-ico{width:60px;height:60px;background:var(--primary);border-radius:16px;
   display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;
@@ -516,14 +517,17 @@ function mapClient(r){return{id:r.id,name:r.name,team:r.team||''};}
 // ── Load ALL data from Supabase into DB on app start ─────────
 async function loadAllFromSupabase(){
   if(!_supa){console.log('Local mode — no DB load');return;}
-  showToast('🔄 Loading data from Supabase...');
+  const detail=document.getElementById('loadingDetail');
+  const setDetail=t=>{if(detail)detail.textContent=t; console.log(t);};
   try{
+    setDetail('Fetching all tables...');
     const [users,loginUsers,clients,lvs,cls,comp,parsDocs,oceanDocs,partLot,release,oceanTT,b2,errors,audit]=await Promise.all([
       dbLoad('users'),dbLoad('login_users'),dbLoad('clients'),
       dbLoad('lvs'),dbLoad('cls'),dbLoad('comp'),dbLoad('pars_docs'),
       dbLoad('ocean_docs'),dbLoad('part_lot'),dbLoad('release'),
       dbLoad('ocean_tt'),dbLoad('b2_entries'),dbLoad('client_errors'),dbLoad('audit')
     ]);
+    setDetail('Processing records...');
     DB.users=users.map(mapUser);
     DB.loginUsers=loginUsers.map(mapLoginUser);
     DB.clients=clients.map(mapClient);
@@ -538,10 +542,13 @@ async function loadAllFromSupabase(){
     DB.b2entries=b2.map(mapB2);
     DB.errors=errors.map(mapError); DB.errors.forEach((r,i)=>r._idx=i);
     DB.audit=audit.map(mapAudit);
-    showToast('✅ Data loaded from Supabase!');
+    setDetail('✅ '+DB.clients.length+' clients · '+DB.lvs.length+' LVS · '+DB.release2.length+' Release · '+DB.audit.length+' Audits');
+    console.log('✅ All data loaded from Supabase');
+    // If already logged in, refresh current page so it shows new data
+    if(CU) refreshPage();
   } catch(e){
     console.error('Supabase load error',e);
-    showToast('⚠️ DB load error — check console',true);
+    showToast('⚠️ DB load error: '+e.message,true);
   }
 }
 
@@ -674,6 +681,13 @@ function setupRealtime(){
 <!-- Supabase config warning banner -->
 <div id="supaConfigBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#7c3aed;color:#fff;padding:10px 20px;font-size:13px;font-weight:700;text-align:center">
   ⚠️ SUPABASE NOT CONFIGURED — running in LOCAL mode (data resets on refresh). Edit SUPA_URL + SUPA_ANON + SUPA_SERVICE_KEY in the &lt;script&gt; tag.
+</div>
+
+<!-- ═══════════════════ LOADING OVERLAY ═══════════════════ -->
+<div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:9998;flex-direction:column;align-items:center;justify-content:center;gap:20px">
+  <div style="width:56px;height:56px;border:5px solid rgba(255,255,255,.15);border-top-color:#7c3aed;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+  <div id="loadingMsg" style="color:#fff;font-size:16px;font-weight:700;font-family:var(--sans)">Loading data...</div>
+  <div id="loadingDetail" style="color:rgba(255,255,255,.5);font-size:12px;font-family:var(--mono)"></div>
 </div>
 
 <!-- ═══════════════════ LOGIN PAGE ═══════════════════ -->
@@ -1869,8 +1883,15 @@ async function doLogin(){
   // ── Admin: hardcoded, always works ──────────────────────
   if(u===ADMIN_CREDS.username&&p===ADMIN_CREDS.password){
     CU={username:u,name:ADMIN_CREDS.name,task:'Manager',role:'Manager',team:'ALL'};
-    // Load all data after admin login if not already loaded
-    if(_supa&&DB.loginUsers.length===0) await loadAllFromSupabase();
+    // Always load all data for admin with loading overlay
+    if(_supa){
+      const overlay=document.getElementById('loadingOverlay');
+      const msg=document.getElementById('loadingMsg');
+      if(overlay) overlay.style.display='flex';
+      if(msg) msg.textContent='Loading all data...';
+      try{ await loadAllFromSupabase(); } catch(e){ console.error(e); }
+      finally{ if(overlay) overlay.style.display='none'; }
+    }
     bootApp();
     return;
   }
@@ -1910,8 +1931,19 @@ async function doLogin(){
       role:lu.role||TASK_ROLE_MAP[lu.task]||'Team Member',
       team:_teamSrc.team||lu.team||''};
 
-  // ── Load all remaining data in background (non-blocking) ──
-  if(_supa) loadAllFromSupabase();
+  // ── Load all data before rendering (show loading overlay) ──
+  if(_supa){
+    const overlay=document.getElementById('loadingOverlay');
+    const msg=document.getElementById('loadingMsg');
+    const detail=document.getElementById('loadingDetail');
+    if(overlay) overlay.style.display='flex';
+    if(msg) msg.textContent='Loading your data...';
+    if(detail) detail.textContent='Fetching records from Supabase';
+    try{
+      await loadAllFromSupabase();
+    } catch(e){ console.error('Post-login load error',e); }
+    finally{ if(overlay) overlay.style.display='none'; }
+  }
 
   bootApp();
 }
@@ -5429,16 +5461,24 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   }
   if(statusEl) statusEl.innerHTML='<span style="color:#3b82f6">🔄 Connecting to database...</span>';
   try{
-    const {data,error}=await _supa.from('login_users').select('*').eq('active',true);
-    if(error) throw error;
-    if(data) DB.loginUsers=data.map(mapLoginUser);
+    // Pre-load 3 critical reference tables in parallel — needed before login
+    const [luData, usersData, clientsData] = await Promise.all([
+      _supa.from('login_users').select('*').eq('active', true),
+      _supa.from('users').select('*'),
+      _supa.from('clients').select('*').order('name', {ascending:true}),
+    ]);
+    if(luData.error) throw luData.error;
+    if(luData.data)     DB.loginUsers = luData.data.map(mapLoginUser);
+    if(usersData.data)  DB.users      = usersData.data.map(mapUser);
+    if(clientsData.data) DB.clients   = clientsData.data.map(mapClient);
     const svcOk = SUPA_SERVICE_KEY !== 'YOUR_SERVICE_ROLE_KEY';
     const svcNote = svcOk ? '' : ' &nbsp;|&nbsp; <span style="color:#f59e0b">⚠️ Service key missing — user creation may fail</span>';
-    if(statusEl) statusEl.innerHTML='<span style="color:#10b981">✅ Connected — '+DB.loginUsers.length+' users ready</span>'+svcNote;
-    console.log('✅ login_users pre-loaded:',DB.loginUsers.length,'users');
+    if(statusEl) statusEl.innerHTML=
+      '<span style="color:#10b981">✅ Connected — '+DB.loginUsers.length+' users · '+DB.clients.length+' clients ready</span>'+svcNote;
+    console.log('✅ Pre-loaded: login_users='+DB.loginUsers.length+', users='+DB.users.length+', clients='+DB.clients.length);
   } catch(e){
-    console.error('Pre-load login_users failed',e);
-    if(statusEl) statusEl.innerHTML='<span style="color:#ef4444">⚠️ DB connection issue — login may be slower</span>';
+    console.error('Pre-load failed',e);
+    if(statusEl) statusEl.innerHTML='<span style="color:#ef4444">⚠️ DB connection issue — login may be slower. Error: '+e.message+'</span>';
   }
 });
 
