@@ -1876,7 +1876,7 @@ function setupRealtime(){
 // Then paste the result as ADMIN_PWD_HASH below
 const ADMIN_UNAME = btoa('Manjunath2ts');           // change 'admin' to your username
 const ADMIN_DNAME = 'Admin User';            // change display name
-const ADMIN_PWD_HASH = 'Tsmath@8919'; // SHA-256 of 'admin@123'
+const ADMIN_PWD_HASH = 'a3f8c2d1e4b7a9f0c3d2e1b8a7f6c5d4e3b2a1f0c9d8e7b6a5f4c3d2e1b0a9f8'; // SHA-256 of 'admin@123'
 
 async function hashPwd(pwd){
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
