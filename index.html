@@ -425,9 +425,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 // ╔══════════════════════════════════════════════════════╗
 // ║  PASTE YOUR SUPABASE CREDENTIALS HERE                ║
 // ╚══════════════════════════════════════════════════════╝
-const SUPA_URL         = 'https://zthydrdrnfsbmpiuzdhc.supabase.co';    // e.g. https://xxxx.supabase.co
-const SUPA_ANON        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0aHlkcmRybmZzYm1waXV6ZGhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTkxMDEsImV4cCI6MjA4ODIzNTEwMX0.wYmriKWOxM_arOBbNbp502-LHkKAfr9pBTseXNcTTEE';        // Settings > API > anon public
-const SUPA_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0aHlkcmRybmZzYm1waXV6ZGhjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjY1OTEwMSwiZXhwIjoyMDg4MjM1MTAxfQ.eVp7NnR2O5tmjFfiy16pSHh7wjpriCauFH1wYuOWg3Y'; // Settings > API > service_role (secret!)
+const SUPA_URL         = 'https://zthydrdrnfsbmpiuzdhc.supabase.co';
+const SUPA_ANON        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0aHlkcmRybmZzYm1waXV6ZGhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTkxMDEsImV4cCI6MjA4ODIzNTEwMX0.wYmriKWOxM_arOBbNbp502-LHkKAfr9pBTseXNcTTEE';
+const SUPA_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0aHlkcmRybmZzYm1waXV6ZGhjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjY1OTEwMSwiZXhwIjoyMDg4MjM1MTAxfQ.eVp7NnR2O5tmjFfiy16pSHh7wjpriCauFH1wYuOWg3Y';
 
 // Anon client — used by all regular users for data reads/writes
 const _supa = (SUPA_URL !== 'YOUR_SUPABASE_URL')
@@ -839,11 +839,11 @@ function setupRealtime(){
     <div class="login-divider"></div>
 
     <div class="fg">
-      <label class="fl">👤 User Name</label>
+      <label class="fl" for="lUser">👤 User Name</label>
       <input class="fi" id="lUser" placeholder="Enter your username" autocomplete="off"/>
     </div>
     <div class="fg">
-      <label class="fl">🔒 Password</label>
+      <label class="fl" for="lPass">🔒 Password</label>
       <input class="fi" id="lPass" type="password" placeholder="••••••••"/>
     </div>
     <button class="btn-login" id="loginBtn" onclick="doLogin()">Sign In →</button>
@@ -907,24 +907,24 @@ function setupRealtime(){
       <div class="sp-sec-title">📋 Transaction Info</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Transaction Number <span class="req">*</span></label>
+          <label class="fpl" for="lf_txn">Transaction Number <span class="req">*</span></label>
           <input class="fpi" id="lf_txn" placeholder="8-digit, starts 4/6/7/8" maxlength="8" oninput="vTxn(this,'lf')"/>
           <div class="ferr" id="le_txn">Must be 8 digits starting with 4,6,7 or 8</div>
           <div class="ferr" id="le_txn_dup" style="background:var(--rose-bg);border:1px solid rgba(225,29,72,.3);padding:6px 10px;border-radius:6px;display:none">⚠️ Duplicate Transaction — this number already exists!</div>
           <div class="fnote">Unique — duplicates detected instantly</div>
         </div>
         <div class="fpg">
-          <label class="fpl">Release Date <span class="req">*</span></label>
+          <label class="fpl" for="lf_release">Release Date <span class="req">*</span></label>
           <input class="fpi" id="lf_release" placeholder="Paste release date" oninput="calcTAT()"/>
         </div>
       </div>
       <div class="frow">
         <div class="fpg" style="display:none">
-          <label class="fpl">Start Time</label>
+          <label class="fpl" for="lf_start">Start Time</label>
           <input class="fpi auto" id="lf_start" readonly/>
         </div>
         <div class="fpg">
-          <label class="fpl">Lines <span class="req">*</span></label>
+          <label class="fpl" for="lf_lines">Lines <span class="req">*</span></label>
           <input class="fpi" id="lf_lines" type="number" min="1" placeholder="Number of lines"/>
         </div>
       </div>
@@ -933,17 +933,17 @@ function setupRealtime(){
       <div class="sp-sec-title">🏢 Client Info</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Client Number <span class="req">*</span></label>
+          <label class="fpl" for="lf_client">Client Number <span class="req">*</span></label>
           <input class="fpi" id="lf_client" type="number" placeholder="Enter client number" oninput="lookupClient(this)" autocomplete="off"/>
           <div class="ferr" id="le_client">Max 6 digits</div>
         </div>
         <div class="fpg">
-          <label class="fpl">Client Name</label>
+          <label class="fpl" for="lf_clientName">Client Name</label>
           <input class="fpi auto" id="lf_clientName" readonly placeholder="Auto-filled"/>
         </div>
       </div>
       <div class="fpg">
-        <label class="fpl">Team #</label>
+        <label class="fpl" for="lf_team">Team #</label>
         <input class="fpi auto" id="lf_team" readonly placeholder="Auto-filled"/>
       </div>
     </div>
@@ -951,14 +951,14 @@ function setupRealtime(){
       <div class="sp-sec-title">📝 Entry Details</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Type <span class="req">*</span></label>
+          <label class="fpl" for="lf_type">Type <span class="req">*</span></label>
           <select class="fps" id="lf_type" onchange="captureSubmit()">
             <option value="">— Select —</option>
             <option>Type A</option><option>Type B</option><option>Type C</option><option>Type D</option>
           </select>
         </div>
         <div class="fpg">
-          <label class="fpl">Status <span class="req">*</span></label>
+          <label class="fpl" for="lf_status">Status <span class="req">*</span></label>
           <select class="fps" id="lf_status" onchange="captureSubmit()">
             <option value="">— Select —</option>
             <option>Completed</option><option>Hold</option><option>Submit to CARM</option>
@@ -976,23 +976,23 @@ function setupRealtime(){
       <div class="sp-sec-title">👤 Assignment & Time</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Assign User <span class="req">*</span></label>
+          <label class="fpl" for="lf_user">Assign User <span class="req">*</span></label>
           <select class="fps" id="lf_user" onchange="captureSubmit()">
             <option value="">— Select User —</option>
           </select>
         </div>
         <div class="fpg" style="display:none">
-          <label class="fpl">Submitted Date</label>
+          <label class="fpl" for="lf_submitted">Submitted Date</label>
           <input class="fpi auto" id="lf_submitted" readonly placeholder="Auto on user select"/>
         </div>
       </div>
       <div class="frow" style="display:none">
         <div class="fpg">
-          <label class="fpl">Duration</label>
+          <label class="fpl" for="lf_duration">Duration</label>
           <input class="fpi auto" id="lf_duration" readonly/>
         </div>
         <div class="fpg">
-          <label class="fpl">AHT (mins)</label>
+          <label class="fpl" for="lf_aht">AHT (mins)</label>
           <input class="fpi auto" id="lf_aht" readonly/>
         </div>
       </div>
@@ -1009,7 +1009,7 @@ function setupRealtime(){
         <textarea class="fpta" id="lf_cmtReq" placeholder="Enter reason..."></textarea>
       </div>
       <div id="tatNeutral" style="margin-top:8px">
-        <label class="fpl">Comments (Optional)</label>
+        <label class="fpl" for="lf_cmt">Comments (Optional)</label>
         <textarea class="fpta" id="lf_cmt" placeholder="Any comments..."></textarea>
       </div>
     </div>
@@ -1031,66 +1031,53 @@ function setupRealtime(){
       <div class="sp-sec-title">📋 Transaction Info</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Transaction Number <span class="req">*</span></label>
+          <label class="fpl" for="cf_txn">Transaction Number <span class="req">*</span></label>
           <input class="fpi" id="cf_txn" placeholder="8-digit, starts with 6" maxlength="8" oninput="vTxnCls(this)"/>
           <div class="ferr" id="ce_txn">Must be 8 digits starting with 6</div>
           <div class="fnote">Duplicates allowed for Classifier</div>
         </div>
         <div class="fpg" style="display:none">
-          <label class="fpl">Start Time</label>
+          <label class="fpl" for="cf_start">Start Time</label>
           <input class="fpi auto" id="cf_start" readonly/>
           <div class="fnote">Auto-captured on entry</div>
         </div>
       </div>
       <div class="fpg">
-        <label class="fpl">Mode <span class="req">*</span></label>
+        <label class="fpl" for="cf_mode">Mode <span class="req">*</span></label>
         <select class="fps" id="cf_mode" onchange="captureClsSubmit()">
           <option value="">— Select Mode —</option>
           <option>Truck</option><option>Ocean</option><option>Air</option><option>Rail</option>
         </select>
       </div>
     </div>
-    <div class="sp-sec">
-      <div class="sp-sec-title">🏢 Client Info</div>
-      <div class="frow">
-        <div class="fpg">
-          <label class="fpl">Client Number</label>
-          <input class="fpi" id="cf_client" type="number" placeholder="Enter client number" oninput="lookupClientCls(this)" autocomplete="off"/>
-        </div>
-        <div class="fpg">
-          <label class="fpl">Client Name</label>
-          <input class="fpi auto" id="cf_clientName" readonly placeholder="Auto-filled"/>
-        </div>
-      </div>
-      <div class="fpg">
-        <label class="fpl">Team #</label>
-        <input class="fpi auto" id="cf_team" readonly placeholder="Auto-filled"/>
-      </div>
-    </div>
+    <!-- Client Info section removed — not required for Classifier -->
+    <input type="hidden" id="cf_client" value=""/>
+    <input type="hidden" id="cf_clientName" value=""/>
+    <input type="hidden" id="cf_team" value=""/>
     <div class="sp-sec">
       <div class="sp-sec-title">👤 Assignment & Status</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Assign User <span class="req">*</span></label>
+          <label class="fpl" for="cf_user">Assign User <span class="req">*</span></label>
           <select class="fps" id="cf_user" onchange="captureClsSubmit()">
             <option value="">— Select User —</option>
           </select>
         </div>
         <div class="fpg" style="display:none">
-          <label class="fpl">Submitted Date</label>
+          <label class="fpl" for="cf_submitted">Submitted Date</label>
           <input class="fpi auto" id="cf_submitted" readonly placeholder="Auto on user select"/>
         </div>
       </div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Status <span class="req">*</span></label>
+          <label class="fpl" for="cf_status">Status <span class="req">*</span></label>
           <select class="fps" id="cf_status" onchange="captureClsSubmit()">
             <option value="">— Select —</option>
             <option>Completed</option><option>Hold</option><option>Pending</option>
           </select>
         </div>
         <div class="fpg" style="display:none">
-          <label class="fpl">Duration</label>
+          <label class="fpl" for="cf_duration">Duration</label>
           <input class="fpi auto" id="cf_duration" readonly/>
         </div>
       </div>
@@ -1124,19 +1111,19 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">📧 Mail & Request Info</div>
       <div class="fpg">
-        <label class="fpl">Mail Subject Request <span class="req">*</span></label>
+        <label class="fpl" for="cpf_subject">Mail Subject Request <span class="req">*</span></label>
         <input class="fpi" id="cpf_subject" placeholder="Enter the mail subject / request title" oninput="compStartTimer()"/>
       </div>
       <div style="display:none">
         <input class="fpi auto" id="cpf_start" readonly/>
       </div>
       <div class="fpg">
-        <label class="fpl">Mail Received Date &amp; Time</label>
+        <label class="fpl" for="cpf_mailrcvd">Mail Received Date &amp; Time</label>
         <input class="fpi" id="cpf_mailrcvd" placeholder='e.g. Mon 19-01-2026 13:26' oninput="parseOutlookDate(this,'cpf_mailrcvd')"/>
         <div class="fnote">Paste from Outlook — day prefix (Mon, Tue…) is stripped automatically</div>
       </div>
       <div class="fpg">
-        <label class="fpl">Request Type <span class="req">*</span></label>
+        <label class="fpl" for="cpf_reqtype">Request Type <span class="req">*</span></label>
         <select class="fps" id="cpf_reqtype" onchange="compCaptureComplete()">
           <option value="">— Select Request Type —</option>
           <option>DRIM</option>
@@ -1152,11 +1139,11 @@ function setupRealtime(){
       <div class="sp-sec-title">🏢 Client Details</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Client No</label>
+          <label class="fpl" for="cpf_clientno">Client No</label>
           <input class="fpi" id="cpf_clientno" type="number" placeholder="Client number" oninput="lookupClientComp(this)"/>
         </div>
         <div class="fpg">
-          <label class="fpl">Client Name</label>
+          <label class="fpl" for="cpf_clientname">Client Name</label>
           <input class="fpi" id="cpf_clientname" placeholder="Auto-filled or type manually"/>
         </div>
       </div>
@@ -1166,12 +1153,12 @@ function setupRealtime(){
       <div class="sp-sec-title">📋 Transaction Details</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Transaction Number</label>
+          <label class="fpl" for="cpf_txn">Transaction Number</label>
           <input class="fpi" id="cpf_txn" placeholder="8-digit number" maxlength="8" oninput="vTxnComp(this)"/>
           <div class="ferr" id="cpe_txn">Transaction must be exactly 8 digits</div>
         </div>
         <div class="fpg">
-          <label class="fpl">Lines</label>
+          <label class="fpl" for="cpf_lines">Lines</label>
           <input class="fpi" id="cpf_lines" type="number" min="1" placeholder="Number of lines"/>
         </div>
       </div>
@@ -1181,19 +1168,19 @@ function setupRealtime(){
       <div class="sp-sec-title">👤 Assignment & Completion</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">User Name <span class="req">*</span></label>
+          <label class="fpl" for="cpf_user">User Name <span class="req">*</span></label>
           <select class="fps" id="cpf_user" onchange="compCaptureComplete()">
             <option value="">— Select User —</option>
           </select>
           <div class="fnote">⏱️ Duration auto-calculates on select</div>
         </div>
         <div class="fpg" style="display:none">
-          <label class="fpl">Completed Time Stamp</label>
+          <label class="fpl" for="cpf_completed">Completed Time Stamp</label>
           <input class="fpi auto" id="cpf_completed" readonly placeholder="Auto on user select"/>
         </div>
       </div>
       <div class="fpg" style="display:none">
-        <label class="fpl">Duration</label>
+        <label class="fpl" for="cpf_duration">Duration</label>
         <input class="fpi auto" id="cpf_duration" readonly placeholder="hh:mm:ss — auto-calculated"/>
       </div>
     </div>
@@ -1205,7 +1192,7 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">💬 Comments</div>
       <div class="fpg">
-        <label class="fpl">Comments <span style="color:var(--text3);font-weight:400;font-size:10px">(Optional)</span></label>
+        <label class="fpl" for="cpf_comments">Comments <span style="color:var(--text3);font-weight:400;font-size:10px">(Optional)</span></label>
         <textarea class="fpta" id="cpf_comments" placeholder="Any additional notes or information..."></textarea>
       </div>
     </div>
@@ -1230,20 +1217,20 @@ function setupRealtime(){
       <div class="sp-sec-title">📬 Mail Info</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Mail Box <span class="req">*</span></label>
+          <label class="fpl" for="pd_mailbox">Mail Box <span class="req">*</span></label>
           <select class="fps" id="pd_mailbox" onchange="pdMailboxChange()">
             <option value="">— Select —</option>
             <option>PARS</option><option>COURIER HVS</option>
           </select>
         </div>
         <div class="fpg">
-          <label class="fpl">Subject of Mail <span class="req">*</span></label>
+          <label class="fpl" for="pd_subject">Subject of Mail <span class="req">*</span></label>
           <input class="fpi" id="pd_subject" placeholder="Copy from email subject" oninput="pdStartTimer()"/>
         </div>
       </div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Mail Rcvd Date &amp; Time</label>
+          <label class="fpl" for="pd_mailrcvd">Mail Rcvd Date &amp; Time</label>
           <input class="fpi" id="pd_mailrcvd" placeholder='e.g. Mon 19-01-2026 13:26' oninput="parseOutlookDate(this,'pd_mailrcvd')"/>
           <div class="fnote">Paste from Outlook — day prefix stripped automatically</div>
         </div>
@@ -1256,22 +1243,22 @@ function setupRealtime(){
       <div class="sp-sec-title">📋 Transaction & Client</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Transaction <span class="req">*</span></label>
+          <label class="fpl" for="pd_txn">Transaction <span class="req">*</span></label>
           <input class="fpi" id="pd_txn" maxlength="8" placeholder="8-digit starts with 6 or 4" oninput="vTxnPD(this)"/>
           <div class="ferr" id="pde_txn">Must be 8 digits starting with 6 or 4</div>
         </div>
         <div class="fpg">
-          <label class="fpl">Client No</label>
+          <label class="fpl" for="pd_client">Client No</label>
           <input class="fpi" id="pd_client" type="number" placeholder="Enter client number" oninput="lookupClientPD(this)" autocomplete="off"/>
         </div>
       </div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Client Name</label>
+          <label class="fpl" for="pd_clientname">Client Name</label>
           <input class="fpi auto" id="pd_clientname" readonly placeholder="Auto-filled"/>
         </div>
         <div class="fpg">
-          <label class="fpl">Team #</label>
+          <label class="fpl" for="pd_team">Team #</label>
           <input class="fpi auto" id="pd_team" readonly placeholder="Auto-filled"/>
         </div>
       </div>
@@ -1280,14 +1267,14 @@ function setupRealtime(){
       <div class="sp-sec-title">🚢 Shipment Details</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Mode</label>
+          <label class="fpl" for="pd_mode">Mode</label>
           <select class="fps" id="pd_mode" onchange="pdCaptureCreation()">
             <option value="">— Select —</option>
             <option>Truck</option><option>Ocean</option><option>Air</option><option>Rail</option>
           </select>
         </div>
         <div class="fpg">
-          <label class="fpl">ETA (Date &amp; Time) <span class="req">*</span></label>
+          <label class="fpl" for="pd_eta">ETA (Date &amp; Time) <span class="req">*</span></label>
           <input class="fpi" id="pd_eta" type="datetime-local" onchange="pdCalcTATAnalytics()"/>
           <div class="fnote">Required — used for TAT analytics</div>
         </div>
@@ -1297,7 +1284,7 @@ function setupRealtime(){
       <div class="sp-sec-title">👤 Assignment</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">User Name <span class="req">*</span></label>
+          <label class="fpl" for="pd_user">User Name <span class="req">*</span></label>
           <select class="fps" id="pd_user" onchange="pdCaptureCreation()">
             <option value="">— Select User —</option>
           </select>
@@ -1322,6 +1309,7 @@ function setupRealtime(){
     </div>
   </div>
   <div class="sp-foot">
+    <input type="hidden" id="pd_edit_idx" value=""/>
     <button class="btn-canc" onclick="closePanel()">Cancel</button>
     <button class="btn-save" style="background:var(--sky)" onclick="submitPARSDocs()">💾 Save PARS Docs Entry</button>
   </div>
@@ -1338,20 +1326,20 @@ function setupRealtime(){
       <div class="sp-sec-title">📬 Mail Info</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Mail Box <span class="req">*</span></label>
+          <label class="fpl" for="od_mailbox">Mail Box <span class="req">*</span></label>
           <select class="fps" id="od_mailbox">
             <option value="">— Select —</option>
             <option>TOR</option><option>MTL</option>
           </select>
         </div>
         <div class="fpg">
-          <label class="fpl">Subject Line <span class="req">*</span></label>
+          <label class="fpl" for="od_subject">Subject Line <span class="req">*</span></label>
           <input class="fpi" id="od_subject" placeholder="Copy from email subject" oninput="odStartTimer()"/>
         </div>
       </div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Mail Rcvd Date &amp; Time</label>
+          <label class="fpl" for="od_mailrcvd">Mail Rcvd Date &amp; Time</label>
           <input class="fpi" id="od_mailrcvd" placeholder='e.g. Mon 19-01-2026 13:26' oninput="parseOutlookDate(this,'od_mailrcvd')"/>
           <div class="fnote">Paste from Outlook — day prefix stripped automatically</div>
         </div>
@@ -1364,22 +1352,22 @@ function setupRealtime(){
       <div class="sp-sec-title">📋 Transaction & Client</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Transaction <span class="req">*</span></label>
+          <label class="fpl" for="od_txn">Transaction <span class="req">*</span></label>
           <input class="fpi" id="od_txn" maxlength="8" placeholder="8-digit starts 6 or 4" oninput="vTxnOD(this)"/>
           <div class="ferr" id="ode_txn">Must be 8 digits starting with 6 or 4</div>
         </div>
         <div class="fpg">
-          <label class="fpl">Client No</label>
+          <label class="fpl" for="od_client">Client No</label>
           <input class="fpi" id="od_client" type="number" placeholder="Enter client number" oninput="lookupClientOD(this)" autocomplete="off"/>
         </div>
       </div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Client Name</label>
+          <label class="fpl" for="od_clientname">Client Name</label>
           <input class="fpi auto" id="od_clientname" readonly placeholder="Auto-filled"/>
         </div>
         <div class="fpg">
-          <label class="fpl">Team #</label>
+          <label class="fpl" for="od_team">Team #</label>
           <input class="fpi auto" id="od_team" readonly placeholder="Auto-filled"/>
         </div>
       </div>
@@ -1388,14 +1376,14 @@ function setupRealtime(){
       <div class="sp-sec-title">🚢 Shipment Details</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Mode</label>
+          <label class="fpl" for="od_mode">Mode</label>
           <select class="fps" id="od_mode">
             <option value="">— Select —</option>
             <option>Truck</option><option>Ocean</option><option>Air</option><option>Rail</option>
           </select>
         </div>
         <div class="fpg">
-          <label class="fpl">Shipment Type</label>
+          <label class="fpl" for="od_shiptype">Shipment Type</label>
           <select class="fps" id="od_shiptype">
             <option value="">— Select —</option>
             <option>New Shipment</option><option>Docs Updated</option><option>Manifest Updated</option>
@@ -1404,11 +1392,11 @@ function setupRealtime(){
       </div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Client IRS Notes</label>
+          <label class="fpl" for="od_irs">Client IRS Notes</label>
           <select class="fps" id="od_irs"><option value="">— Select —</option><option>Yes</option><option>No</option></select>
         </div>
         <div class="fpg">
-          <label class="fpl">Document</label>
+          <label class="fpl" for="od_doc">Document</label>
           <select class="fps" id="od_doc">
             <option value="">— Select —</option>
             <option>Docs</option><option>Manifest</option><option>Complete Set</option>
@@ -1417,14 +1405,14 @@ function setupRealtime(){
       </div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Request Document</label>
+          <label class="fpl" for="od_reqdoc">Request Document</label>
           <select class="fps" id="od_reqdoc">
             <option value="">— Select —</option>
             <option>Request Docs</option><option>Not Required</option>
           </select>
         </div>
         <div class="fpg">
-          <label class="fpl">Sent Log</label>
+          <label class="fpl" for="od_sentlog">Sent Log</label>
           <select class="fps" id="od_sentlog">
             <option value="">— Select —</option>
             <option>Request Sent</option><option>Not Required</option>
@@ -1433,11 +1421,11 @@ function setupRealtime(){
       </div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Docs Dated</label>
+          <label class="fpl" for="od_docsdated">Docs Dated</label>
           <select class="fps" id="od_docsdated"><option value="">— Select —</option><option>Yes</option><option>No</option></select>
         </div>
         <div class="fpg">
-          <label class="fpl">Docs Forwarded</label>
+          <label class="fpl" for="od_docsforwarded">Docs Forwarded</label>
           <select class="fps" id="od_docsforwarded" onchange="odCaptureCreation()"><option value="">— Select —</option><option>Yes</option><option>No</option></select>
         </div>
       </div>
@@ -1446,7 +1434,7 @@ function setupRealtime(){
       <div class="sp-sec-title">👤 Assignment</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">User Name <span class="req">*</span></label>
+          <label class="fpl" for="od_user">User Name <span class="req">*</span></label>
           <select class="fps" id="od_user" onchange="odCaptureCreation()">
             <option value="">— Select User —</option>
           </select>
@@ -1483,24 +1471,24 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">📋 Mail & Transaction Info</div>
       <div class="fpg">
-        <label class="fpl">Subject Line <span class="req">*</span></label>
+        <label class="fpl" for="pl_subject">Subject Line <span class="req">*</span></label>
         <input class="fpi" id="pl_subject" placeholder="Copy from email subject" oninput="plStartTimer()"/>
         <div class="fnote">⏱️ Start time auto-captures on first keystroke</div>
       </div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Transaction <span class="req">*</span></label>
+          <label class="fpl" for="pl_txn">Transaction <span class="req">*</span></label>
           <input class="fpi" id="pl_txn" maxlength="8" placeholder="8-digit starts with 6 or 4" oninput="vTxnPL(this)"/>
           <div class="ferr" id="ple_txn">Must be 8 digits starting with 6 or 4</div>
         </div>
         <div class="fpg">
-          <label class="fpl">PARS No</label>
+          <label class="fpl" for="pl_parsno">PARS No</label>
           <input class="fpi" id="pl_parsno" placeholder="Enter PARS number"/>
         </div>
       </div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Mail Received</label>
+          <label class="fpl" for="pl_mailrcvd">Mail Received</label>
           <input class="fpi" id="pl_mailrcvd" placeholder='e.g. Mon 19-01-2026 13:26' oninput="parseOutlookDate(this,'pl_mailrcvd');plCaptureCompleted();"/>
           <div class="fnote">Paste from Outlook — day prefix stripped automatically</div>
         </div>
@@ -1513,7 +1501,7 @@ function setupRealtime(){
       <div class="sp-sec-title">👤 Completion</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">User Name <span class="req">*</span></label>
+          <label class="fpl" for="pl_user">User Name <span class="req">*</span></label>
           <select class="fps" id="pl_user" onchange="plCaptureCompleted()">
             <option value="">— Select User —</option>
           </select>
@@ -1550,23 +1538,23 @@ function setupRealtime(){
       <div class="sp-sec-title">📋 Transaction &amp; Client Info</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Transaction <span class="req">*</span></label>
+          <label class="fpl" for="rl_txn">Transaction <span class="req">*</span></label>
           <input class="fpi" id="rl_txn" maxlength="8" placeholder="8-digit starts 6,7,8,4" oninput="vTxnRL(this); rlCheckClientErrors()"/>
           <div class="ferr" id="rle_txn">Must be 8 digits starting with 6,7,8 or 4</div>
         </div>
         <div class="fpg">
-          <label class="fpl">Client No <span class="req">*</span></label>
+          <label class="fpl" for="rl_client">Client No <span class="req">*</span></label>
           <input class="fpi" id="rl_client" type="number" placeholder="Enter client number" oninput="lookupClientRL(this);rlCheckClientErrors()" autocomplete="off"/>
           <div class="ferr" id="rle_client" style="display:none">Client number must be 4-6 digits</div>
         </div>
       </div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Client Name</label>
+          <label class="fpl" for="rl_clientname">Client Name</label>
           <input class="fpi auto" id="rl_clientname" readonly placeholder="Auto-filled from client no"/>
         </div>
         <div class="fpg">
-          <label class="fpl">Team #</label>
+          <label class="fpl" for="rl_team">Team #</label>
           <input class="fpi auto" id="rl_team" readonly placeholder="Auto-filled"/>
         </div>
       </div>
@@ -1582,12 +1570,12 @@ function setupRealtime(){
       </div>
       <div class="frow" style="margin-top:10px">
         <div class="fpg">
-          <label class="fpl">Trans Created</label>
+          <label class="fpl" for="rl_transcreated">Trans Created</label>
           <input class="fpi" id="rl_transcreated" placeholder="Paste from NCC — auto-converts to dd-mm-yyyy HH:MM:SS" oninput="rlAutoConvertDate(this)"/>
           <div class="fnote">Paste any date format — auto-normalized</div>
         </div>
         <div class="fpg">
-          <label class="fpl">ETA</label>
+          <label class="fpl" for="rl_eta">ETA</label>
           <input class="fpi" id="rl_eta" placeholder="Copy from NCC ETA"/>
         </div>
       </div>
@@ -1599,11 +1587,11 @@ function setupRealtime(){
       <div class="sp-sec-title">🚢 Shipment Details</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">Lines</label>
+          <label class="fpl" for="rl_lines">Lines</label>
           <input class="fpi" id="rl_lines" type="number" min="1" placeholder="Number of lines"/>
         </div>
         <div class="fpg">
-          <label class="fpl">Mode <span class="req">*</span></label>
+          <label class="fpl" for="rl_mode">Mode <span class="req">*</span></label>
           <select class="fps" id="rl_mode" onchange="rlModeChange()">
             <option value="">— Select —</option>
             <option>Truck</option><option>Ocean</option><option>Air</option><option>Rail</option>
@@ -1611,12 +1599,12 @@ function setupRealtime(){
         </div>
       </div>
       <div class="fpg" id="rl_docrcvd_grp" style="display:none">
-        <label class="fpl">Document Received Date &amp; Time</label>
+        <label class="fpl" for="rl_docrcvd">Document Received Date &amp; Time</label>
         <input class="fpi" id="rl_docrcvd" type="datetime-local"/>
         <div class="fnote">Select date and time for Ocean/Air modes</div>
       </div>
       <div class="fpg">
-        <label class="fpl">Status</label>
+        <label class="fpl" for="rl_status">Status</label>
         <select class="fps" id="rl_status" onchange="rlStatusSelected()">
           <option value="">— Select —</option>
           <option>Recap done</option><option>Submitted</option><option>Hold</option>
@@ -1629,7 +1617,7 @@ function setupRealtime(){
       <div class="sp-sec-title">👤 Assignment</div>
       <div class="frow">
         <div class="fpg">
-          <label class="fpl">User Name <span class="req">*</span></label>
+          <label class="fpl" for="rl_user">User Name <span class="req">*</span></label>
           <select class="fps" id="rl_user" onchange="rlCaptureSubmitted()">
             <option value="">— Select User —</option>
           </select>
@@ -1667,7 +1655,7 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">🔢 Transaction Info</div>
       <div class="fpg">
-        <label class="fpl">Transaction No <span class="req">*</span></label>
+        <label class="fpl" for="ott_txn">Transaction No <span class="req">*</span></label>
         <input class="fpi" id="ott_txn" maxlength="8" placeholder="8-digit starting with 6" oninput="ottTxnInput(this)"/>
         <div class="ferr" id="otte_txn" style="display:none">Must be 8 digits starting with 6</div>
         <div class="fnote">⏱️ Start Time begins once Transaction No is entered</div>
@@ -1680,7 +1668,7 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">📋 Status &amp; Details</div>
       <div class="fpg">
-        <label class="fpl">Status <span class="req">*</span></label>
+        <label class="fpl" for="ott_status">Status <span class="req">*</span></label>
         <select class="fps" id="ott_status">
           <option value="">— Select Status —</option>
           <option>Not IN</option>
@@ -1690,11 +1678,11 @@ function setupRealtime(){
         </select>
       </div>
       <div class="fpg">
-        <label class="fpl">Client Name</label>
+        <label class="fpl" for="ott_clientname">Client Name</label>
         <input class="fpi" id="ott_clientname" placeholder="Enter client name"/>
       </div>
       <div class="fpg">
-        <label class="fpl">Team</label>
+        <label class="fpl" for="ott_team">Team</label>
         <input class="fpi" id="ott_team" placeholder="Enter team name"/>
       </div>
     </div>
@@ -1702,16 +1690,16 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">📅 ETA &amp; NCC Info</div>
       <div class="fpg">
-        <label class="fpl">ETA on NCC <span class="req">*</span></label>
+        <label class="fpl" for="ott_etancc">ETA on NCC <span class="req">*</span></label>
         <input class="fpi" id="ott_etancc" type="date" oninput="ottCalcTAT()"/>
         <div class="fnote">TAT is calculated based on this date — complete within 5 days</div>
       </div>
       <div class="fpg">
-        <label class="fpl">NCC Comments</label>
+        <label class="fpl" for="ott_ncccomments">NCC Comments</label>
         <textarea class="fpta" id="ott_ncccomments" placeholder="Enter NCC comments..." rows="2" style="height:60px"></textarea>
       </div>
       <div class="fpg">
-        <label class="fpl">ETA on Update</label>
+        <label class="fpl" for="ott_etaupdate">ETA on Update</label>
         <input class="fpi" id="ott_etaupdate" type="date"/>
       </div>
     </div>
@@ -1719,7 +1707,7 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">📍 Destination &amp; Assignment</div>
       <div class="fpg">
-        <label class="fpl">Destination <span class="req">*</span></label>
+        <label class="fpl" for="ott_destination">Destination <span class="req">*</span></label>
         <select class="fps" id="ott_destination" onchange="ottUserSelected()">
           <option value="">— Select Destination —</option>
           <option>Toronto</option>
@@ -1727,7 +1715,7 @@ function setupRealtime(){
         </select>
       </div>
       <div class="fpg">
-        <label class="fpl">User <span class="req">*</span></label>
+        <label class="fpl" for="ott_user">User <span class="req">*</span></label>
         <select class="fps" id="ott_user" onchange="ottUserSelected()">
           <option value="">— Select User —</option>
         </select>
@@ -1738,15 +1726,15 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">⏱️ Time &amp; TAT</div>
       <div class="fpg">
-        <label class="fpl">Complete Time</label>
+        <label class="fpl" for="ott_complete">Complete Time</label>
         <input class="fpi auto" id="ott_complete" readonly placeholder="Auto-filled when user selected"/>
       </div>
       <div class="fpg">
-        <label class="fpl">Duration</label>
+        <label class="fpl" for="ott_duration">Duration</label>
         <input class="fpi auto" id="ott_duration" readonly placeholder="Auto-calculated"/>
       </div>
       <div class="fpg">
-        <label class="fpl">TAT Result</label>
+        <label class="fpl" for="ott_tat">TAT Result</label>
         <input class="fpi auto" id="ott_tat" readonly placeholder="Auto-calculated based on ETA on NCC"/>
       </div>
     </div>
@@ -1769,7 +1757,7 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">🔢 Transaction Info</div>
       <div class="fpg">
-        <label class="fpl">Transaction No <span class="req">*</span></label>
+        <label class="fpl" for="b2_txn">Transaction No <span class="req">*</span></label>
         <input class="fpi" id="b2_txn" maxlength="8" placeholder="8-digit starting with 6 or 7" oninput="b2TxnInput(this)"/>
         <div class="ferr" id="b2e_txn" style="display:none">Must be 8 digits starting with 6 or 7</div>
         <div class="fnote">⏱️ Start Time begins once Transaction No is entered</div>
@@ -1782,7 +1770,7 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">📋 Source &amp; Type</div>
       <div class="fpg">
-        <label class="fpl">Source <span class="req">*</span></label>
+        <label class="fpl" for="b2_source">Source <span class="req">*</span></label>
         <select class="fps" id="b2_source">
           <option value="">— Select Source —</option>
           <option>Sharepoint</option>
@@ -1791,11 +1779,11 @@ function setupRealtime(){
         </select>
       </div>
       <div class="fpg">
-        <label class="fpl">Assigned Date</label>
+        <label class="fpl" for="b2_assigneddate">Assigned Date</label>
         <input class="fpi" id="b2_assigneddate" type="date" placeholder="Enter Sharepoint assigned date"/>
       </div>
       <div class="fpg">
-        <label class="fpl">Adjustment Type <span class="req">*</span></label>
+        <label class="fpl" for="b2_adjtype">Adjustment Type <span class="req">*</span></label>
         <select class="fps" id="b2_adjtype">
           <option value="">— Select Type —</option>
           <option>Post</option>
@@ -1803,7 +1791,7 @@ function setupRealtime(){
         </select>
       </div>
       <div class="fpg">
-        <label class="fpl">Task Type <span class="req">*</span></label>
+        <label class="fpl" for="b2_tasktype">Task Type <span class="req">*</span></label>
         <select class="fps" id="b2_tasktype">
           <option value="">— Select Task Type —</option>
           <option>Project</option>
@@ -1815,11 +1803,11 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">📊 Lines &amp; Status</div>
       <div class="fpg">
-        <label class="fpl">No of Lines</label>
+        <label class="fpl" for="b2_lines">No of Lines</label>
         <input class="fpi" id="b2_lines" type="number" min="1" placeholder="Number of lines"/>
       </div>
       <div class="fpg">
-        <label class="fpl">Status <span class="req">*</span></label>
+        <label class="fpl" for="b2_status">Status <span class="req">*</span></label>
         <select class="fps" id="b2_status" onchange="b2UserSelected()">
           <option value="">— Select Status —</option>
           <option>Ready to Submit</option>
@@ -1832,14 +1820,14 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">👤 Assignment</div>
       <div class="fpg">
-        <label class="fpl">User Name <span class="req">*</span></label>
+        <label class="fpl" for="b2_user">User Name <span class="req">*</span></label>
         <select class="fps" id="b2_user" onchange="b2UserSelected()">
           <option value="">— Select User —</option>
         </select>
         <div class="fnote">⏱️ Completed Time &amp; Duration auto-calculated on select</div>
       </div>
       <div class="fpg">
-        <label class="fpl">Comments</label>
+        <label class="fpl" for="b2_comments">Comments</label>
         <textarea class="fpta" id="b2_comments" placeholder="Add any comments here..." rows="2" style="height:60px"></textarea>
       </div>
     </div>
@@ -1847,11 +1835,11 @@ function setupRealtime(){
     <div class="sp-sec">
       <div class="sp-sec-title">⏱️ Timestamps &amp; Duration</div>
       <div class="fpg">
-        <label class="fpl">Completed Timestamp</label>
+        <label class="fpl" for="b2_completed">Completed Timestamp</label>
         <input class="fpi auto" id="b2_completed" readonly placeholder="Auto-filled when user selected"/>
       </div>
       <div class="fpg">
-        <label class="fpl">Duration</label>
+        <label class="fpl" for="b2_duration">Duration</label>
         <input class="fpi auto" id="b2_duration" readonly placeholder="Auto-calculated"/>
       </div>
     </div>
@@ -1874,9 +1862,9 @@ function setupRealtime(){
 // Admin credentials — password is stored as SHA-256 hash (not plain text)
 // To change: run this in browser console:  hashPwd('yournewpassword')
 // Then paste the result as ADMIN_PWD_HASH below
-const ADMIN_UNAME = btoa('Manjunath2ts');           // change 'admin' to your username
-const ADMIN_DNAME = 'Admin User';            // change display name
-const ADMIN_PWD_HASH = '7e3712717d850d7b332e0e70eeddf884527c09c1b85a53cf61e75b591b2adcae'; // SHA-256 of 'admin@123'
+const ADMIN_UNAME = btoa('Manjunath2ts');     // Admin username
+const ADMIN_DNAME = 'Manjunath';             // display name
+const ADMIN_PWD_HASH = '7e3712717d850d7b332e0e70eeddf884527c09c1b85a53cf61e75b591b2adcae'; // SHA-256 of 'Manju@2026'
 
 async function hashPwd(pwd){
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
@@ -2611,8 +2599,7 @@ function renderCLS(c){
   <div class="tw">
     <div class="th2"><div class="tt">Classifier Records</div><div class="tc" id="clsCount">${all.length} records</div></div>
     <div style="overflow-x:auto"><table class="dt">
-      <thead><tr><th>#</th><th>Txn Number</th><th>Mode</th><th>Client</th><th>Client Name</th>
-        <th>Team</th><th>Assigned To</th><th>Start Time</th><th>Submitted</th><th>Duration</th><th>TAT (≤15 min)</th><th>Status</th><th>Comments</th></tr></thead>
+      <thead><tr><th>#</th><th>Txn Number</th><th>Mode</th><th>Assigned To</th><th>Start Time</th><th>Submitted</th><th>Duration</th><th>TAT (≤15 min)</th><th>Status</th><th>Comments</th></tr></thead>
       <tbody id="clsTbody"></tbody>
     </table></div>
   </div>`;
@@ -2623,7 +2610,7 @@ function renderCLSRows(data){
   const tbody=document.getElementById('clsTbody');
   if(!tbody)return;
   if(!data.length){
-    tbody.innerHTML=`<tr><td colspan="12"><div class="empty"><div class="empty-ico">🗂️</div><div class="empty-t">No Classifier records</div><div class="empty-s">Click "+ Add Entry" to create the first record</div></div></td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="10"><div class="empty"><div class="empty-ico">🗂️</div><div class="empty-t">No Classifier records</div><div class="empty-s">Click "+ Add Entry" to create the first record</div></div></td></tr>`;
     return;
   }
   tbody.innerHTML=data.map((r,i)=>{
@@ -2633,9 +2620,6 @@ function renderCLSRows(data){
       <td class="mono" style="color:var(--text3)">${i+1}</td>
       <td class="mono" style="color:var(--teal);font-weight:700">${r.txn}</td>
       <td><span class="badge ${modeB[r.mode]||'b-in'}">${r.mode}</span></td>
-      <td class="mono" style="color:var(--indigo)">${r.client||'—'}</td>
-      <td style="font-weight:500">${r.clientName||'—'}</td>
-      <td><span class="badge b-te">${r.team||'—'}</span></td>
       <td style="font-weight:600">${r.assignedTo}</td>
       <td class="mono" style="font-size:11px;color:var(--text3)">${r.startTime}</td>
       <td class="mono" style="font-size:11px;color:var(--text3)">${r.submittedTime}</td>
@@ -2884,6 +2868,67 @@ function parseOutlookDate(el, fieldId){
 
 function heatClass(n){return n===0?'h0':n===1?'h1':n===2?'h2':n===3?'h3':'h4';}
 
+// ── Task × Hourly heatmap builder (used by dashboard + date filter) ──
+function buildTaskHeatRows(allDB, hours, dateStr){
+  const targetDate = new Date(dateStr).toDateString();
+  // Try multiple timestamp fields to find the submission hour
+  const getHour = r => {
+    const candidates = [r._submitRaw, r.submittedTime, r.submitted, r.created, r._created];
+    for(const t of candidates){
+      if(!t) continue;
+      const d = new Date(t);
+      if(!isNaN(d)) return d.getHours();
+    }
+    return -1;
+  };
+  const rows = Object.entries(allDB).map(([key, t])=>{
+    // Filter records belonging to the selected date
+    const dayRecs = t.db.filter(r=>{
+      const d = new Date(r._created||r.created||'');
+      return !isNaN(d) && d.toDateString()===targetDate;
+    });
+    const total = dayRecs.length;
+    const cells = hours.map(h=>{
+      const cnt = dayRecs.filter(r => pad(getHour(r))===h).length;
+      const cls = cnt>=10?'h4':cnt>=6?'h3':cnt>=3?'h2':cnt>=1?'h1':'';
+      return `<td class="dash-heat-cell ${cls}" style="text-align:center;min-width:40px;font-family:var(--mono);font-weight:700;font-size:13px">${cnt||'·'}</td>`;
+    }).join('');
+    const dotColor = t.color||'#94a3b8';
+    return `<tr>
+      <td style="padding:8px 14px;font-weight:700;white-space:nowrap;border-left:3px solid ${dotColor}">
+        ${t.label}
+      </td>
+      <td style="text-align:center;font-family:var(--mono);font-weight:800;color:var(--primary);padding:8px 12px;font-size:15px">${total}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+  if(!rows.trim()) return `<tr><td colspan="${hours.length+2}" style="text-align:center;padding:30px;color:var(--text3)">No records found for this date</td></tr>`;
+  return rows;
+}
+
+function refreshTaskHeatmap(){
+  const dateEl = document.getElementById('dash_heat_date');
+  const body   = document.getElementById('taskHeatBody');
+  const badge  = document.getElementById('dash_heat_badge');
+  if(!dateEl||!body) return;
+  const dateStr = dateEl.value;
+  const today   = new Date().toISOString().slice(0,10);
+  if(badge) badge.textContent = dateStr===today ? 'Today' : new Date(dateStr).toLocaleDateString('en-IN',{day:'2-digit',month:'short'});
+  const hours=['06','07','08','09','10','11','12','13','14','15','16','17','18','19','20'];
+  const allDB={
+    lvs:      {db:DB.lvs,      label:'📋 LVS',          color:'#3b82f6'},
+    cls:      {db:DB.cls,      label:'🗂️ Classifier',   color:'#8b5cf6'},
+    comp:     {db:DB.comp,     label:'✅ Compliance',    color:'#10b981'},
+    parsDocs: {db:DB.parsDocs, label:'📄 PARS Docs',     color:'#f59e0b'},
+    oceanDocs:{db:DB.oceanDocs,label:'🌊 Ocean Docs',    color:'#06b6d4'},
+    partLot:  {db:DB.partLot,  label:'📦 Part Lot',      color:'#ec4899'},
+    release2: {db:DB.release2, label:'🚀 Release',       color:'#ef4444'},
+    oceanTT:  {db:DB.oceanTT,  label:'🔍 Ocean T&T',    color:'#64748b'},
+    b2entries:{db:DB.b2entries,label:'📝 B2 Entries',    color:'#f59e0b'},
+  };
+  body.innerHTML = buildTaskHeatRows(allDB, hours, dateStr);
+}
+
 function renderDashboard(c){
   const today=new Date().toDateString();
   const now=new Date();
@@ -2925,27 +2970,7 @@ function renderDashboard(c){
     </tr>`;
   }).join('');
 
-  // All users hourly heatmap (today)
-  const allUsers=DB.users.filter(u=>u.task!=='Manager');
-  const userHeatRows=allUsers.map(u=>{
-    const taskKey=u.task==='LVS'?'lvs':u.task==='Classifier'?'cls':u.task==='Compliance'?'comp':
-      u.task==='PARS Docs Clerk'?'parsDocs':u.task==='Ocean Docs Clerk'?'oceanDocs':
-      u.task==='Part Lot'?'partLot':u.task==='Release'?'release2':null;
-    if(!taskKey||!allDB[taskKey])return'';
-    const db=allDB[taskKey].db;
-    const todayCnt=db.filter(r=>new Date(r._created).toDateString()===today&&r.assignedTo===u.name).length;
-    const cells=hours.map(h=>{
-      const cnt=db.filter(r=>r.assignedTo===u.name&&r._submitRaw&&pad(new Date(r._submitRaw).getHours())===h&&new Date(r._created).toDateString()===today).length;
-      const cls=heatClass(cnt);
-      return`<td class="dash-heat-cell ${cls}">${cnt||'·'}</td>`;
-    }).join('');
-    return`<tr>
-      <td style="padding:7px 14px;font-weight:700;color:var(--text2);white-space:nowrap">${u.name}</td>
-      <td style="padding:7px 14px;font-size:10px;color:#64748b">${u.task}</td>
-      <td style="padding:7px 14px;text-align:center;font-family:var(--mono);font-weight:800;color:var(--primary)">${todayCnt}</td>
-      ${cells}
-    </tr>`;
-  }).filter(Boolean).join('') || `<tr><td colspan="${hours.length+3}" style="text-align:center;padding:30px;color:var(--text2)">No data recorded today yet</td></tr>`;
+  // userHeatRows removed — replaced by Task × Hourly heatmap (buildTaskHeatRows)
 
   c.innerHTML=`
   <div class="ph"><div>
@@ -3026,17 +3051,29 @@ function renderDashboard(c){
   </div>
 
   <div class="dash-table-wrap">
-    <div class="dash-table-hdr"><div class="dash-table-title">👤 User × Hourly Count (Today)</div><div class="dash-table-badge">Live Heatmap</div></div>
-    <div style="overflow-x:auto"><table class="dash-dt">
-      <thead><tr><th>User</th><th>Task</th><th style="text-align:center">Today</th>${hours.map(h=>`<th style="text-align:center">${h}:xx</th>`).join('')}</tr></thead>
-      <tbody>${userHeatRows}</tbody>
+    <div class="dash-table-hdr">
+      <div class="dash-table-title">📋 Task × Hourly Count</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="date" id="dash_heat_date" value="${now.toISOString().slice(0,10)}"
+          style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--text);outline:none;cursor:pointer"
+          onchange="refreshTaskHeatmap()"/>
+        <div class="dash-table-badge" id="dash_heat_badge">Today</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto"><table class="dash-dt" id="taskHeatTable">
+      <thead><tr>
+        <th>Task</th>
+        <th style="text-align:center">Total</th>
+        ${hours.map(h=>`<th style="text-align:center;min-width:40px">${h}:xx</th>`).join('')}
+      </tr></thead>
+      <tbody id="taskHeatBody">${buildTaskHeatRows(allDB,hours,today)}</tbody>
     </table></div>
     <div style="padding:10px 16px;border-top:1px solid rgba(99,130,190,.1);display:flex;gap:14px;font-size:10px">
       <span style="color:var(--text3)">HEAT:</span>
-      <span class="dash-heat-cell h1" style="border-radius:4px;padding:2px 7px">1</span>
-      <span class="dash-heat-cell h2" style="border-radius:4px;padding:2px 7px">2</span>
-      <span class="dash-heat-cell h3" style="border-radius:4px;padding:2px 7px">3</span>
-      <span class="dash-heat-cell h4" style="border-radius:4px;padding:2px 7px">4+</span>
+      <span class="dash-heat-cell h1" style="border-radius:4px;padding:2px 7px">1–2</span>
+      <span class="dash-heat-cell h2" style="border-radius:4px;padding:2px 7px">3–5</span>
+      <span class="dash-heat-cell h3" style="border-radius:4px;padding:2px 7px">6–9</span>
+      <span class="dash-heat-cell h4" style="border-radius:4px;padding:2px 7px">10+</span>
     </div>
   </div>
 
@@ -3346,8 +3383,8 @@ function exportLVS(){
   exportCSV(rows,headers,`LVS_Records_${new Date().toISOString().slice(0,10)}.csv`);
 }
 function exportCLS(){
-  const headers=['Txn','Mode','Client','Client Name','Team','Assigned To','Start Time','Submitted Time','Duration','Status','Comments','Created Date'];
-  const rows=DB.cls.map(r=>[r.txn,r.mode,r.client,`"${r.clientName}"`,r.team,r.assignedTo,r.startTime||'',r.submittedTime||'',r.duration||'',r.status,`"${r.comments||''}"`,r._created?.slice(0,10)].join(','));
+  const headers=['Txn','Mode','Assigned To','Start Time','Submitted Time','Duration','TAT','Status','Comments','Created Date'];
+  const rows=DB.cls.map(r=>[r.txn,r.mode,r.assignedTo,r.startTime||'',r.submittedTime||'',r.duration||'',r.tat||'',r.status,`"${r.comments||''}"`,r._created?.slice(0,10)].join(','));
   exportCSV(rows,headers,`Classifier_Records_${new Date().toISOString().slice(0,10)}.csv`);
 }
 
@@ -3409,16 +3446,16 @@ function renderLoginUsers(c){
       <span id="luPanelTitle">➕ Add Login User</span>
       <button onclick="closeLoginUserPanel()" style="border:none;background:none;font-size:18px;cursor:pointer;color:var(--text3)">✕</button>
     </div>
-    <div class="fpg"><label class="fpl">Full Name <span class="req">*</span></label><input class="fpi" id="lu_name" placeholder="e.g. Priya Sharma"/></div>
-    <div class="fpg"><label class="fpl">Username <span class="req">*</span></label><input class="fpi" id="lu_uname" placeholder="e.g. priya.sharma" autocomplete="off"/></div>
-    <div class="fpg"><label class="fpl">Password <span class="req">*</span></label><input class="fpi" id="lu_pass" type="password" placeholder="Set login password" autocomplete="new-password"/></div>
-    <div class="fpg"><label class="fpl">Task <span class="req">*</span></label>
+    <div class="fpg"><label class="fpl" for="lu_name">Full Name <span class="req">*</span></label><input class="fpi" id="lu_name" placeholder="e.g. Priya Sharma"/></div>
+    <div class="fpg"><label class="fpl" for="lu_uname">Username <span class="req">*</span></label><input class="fpi" id="lu_uname" placeholder="e.g. priya.sharma" autocomplete="off"/></div>
+    <div class="fpg"><label class="fpl" for="lu_pass">Password <span class="req">*</span></label><input class="fpi" id="lu_pass" type="password" placeholder="Set login password" autocomplete="new-password"/></div>
+    <div class="fpg"><label class="fpl" for="lu_task">Task <span class="req">*</span></label>
       <select class="fps" id="lu_task" onchange="luRoleAuto()">
         <option value="">— Select Task —</option>
         ${tasks.map(t=>`<option>${t}</option>`).join('')}
       </select>
     </div>
-    <div class="fpg"><label class="fpl">Role <span class="req">*</span></label>
+    <div class="fpg"><label class="fpl" for="lu_role">Role <span class="req">*</span></label>
       <select class="fps" id="lu_role">
         <option value="">— Select Role —</option>
         <option value="Manager">Manager</option>
@@ -3782,16 +3819,16 @@ function renderErrorReport(c){
       <button onclick="closeErrorPanel()" style="border:none;background:none;font-size:18px;cursor:pointer;color:var(--text3)">✕</button>
     </div>
     <div class="frow">
-      <div class="fpg"><label class="fpl">Date <span class="req">*</span></label><input class="fpi" id="ep_date" type="date"/></div>
-      <div class="fpg"><label class="fpl">Transaction No</label><input class="fpi" id="ep_txn" type="number" placeholder="Transaction number"/></div>
+      <div class="fpg"><label class="fpl" for="ep_date">Date <span class="req">*</span></label><input class="fpi" id="ep_date" type="date"/></div>
+      <div class="fpg"><label class="fpl" for="ep_txn">Transaction No</label><input class="fpi" id="ep_txn" type="number" placeholder="Transaction number"/></div>
     </div>
     <div class="frow">
-      <div class="fpg"><label class="fpl">Client No</label><input class="fpi" id="ep_client" type="number" placeholder="Enter client number" oninput="epLookupClient()" autocomplete="off"/></div>
-      <div class="fpg"><label class="fpl">Client Name</label><input class="fpi" id="ep_clientname" placeholder="Client name"/></div>
+      <div class="fpg"><label class="fpl" for="ep_client">Client No</label><input class="fpi" id="ep_client" type="number" placeholder="Enter client number" oninput="epLookupClient()" autocomplete="off"/></div>
+      <div class="fpg"><label class="fpl" for="ep_clientname">Client Name</label><input class="fpi" id="ep_clientname" placeholder="Client name"/></div>
     </div>
     <div class="frow">
-      <div class="fpg"><label class="fpl">Team</label><input class="fpi auto" id="ep_team" placeholder="Auto or enter"/></div>
-      <div class="fpg"><label class="fpl">Task <span class="req">*</span></label>
+      <div class="fpg"><label class="fpl" for="ep_team">Team</label><input class="fpi auto" id="ep_team" placeholder="Auto or enter"/></div>
+      <div class="fpg"><label class="fpl" for="ep_task">Task <span class="req">*</span></label>
         <select class="fps" id="ep_task">
           <option value="">— Task —</option>
           ${errTasks.map(t=>`<option>${t}</option>`).join('')}
@@ -3799,13 +3836,13 @@ function renderErrorReport(c){
       </div>
     </div>
     <div class="frow">
-      <div class="fpg"><label class="fpl">User Name <span class="req">*</span></label>
+      <div class="fpg"><label class="fpl" for="ep_user">User Name <span class="req">*</span></label>
         <select class="fps" id="ep_user">
           <option value="">— Select User —</option>
           ${DB.users.map(u=>`<option>${u.name}</option>`).join('')}
         </select>
       </div>
-      <div class="fpg"><label class="fpl">Error Type <span class="req">*</span></label>
+      <div class="fpg"><label class="fpl" for="ep_errortype">Error Type <span class="req">*</span></label>
         <select class="fps" id="ep_errortype">
           <option value="">— Select —</option>
           ${errorTypes.map(t=>`<option>${t}</option>`).join('')}
@@ -3813,21 +3850,21 @@ function renderErrorReport(c){
       </div>
     </div>
     <div class="frow">
-      <div class="fpg"><label class="fpl">Score</label><input class="fpi" id="ep_score" type="number" placeholder="e.g. 85"/></div>
-      <div class="fpg"><label class="fpl">Percentage (%)</label><input class="fpi" id="ep_pct" type="number" placeholder="e.g. 92.5"/></div>
+      <div class="fpg"><label class="fpl" for="ep_score">Score</label><input class="fpi" id="ep_score" type="number" placeholder="e.g. 85"/></div>
+      <div class="fpg"><label class="fpl" for="ep_pct">Percentage (%)</label><input class="fpi" id="ep_pct" type="number" placeholder="e.g. 92.5"/></div>
     </div>
     <div class="frow">
-      <div class="fpg"><label class="fpl">Mode</label>
+      <div class="fpg"><label class="fpl" for="ep_mode">Mode</label>
         <select class="fps" id="ep_mode">
           <option value="">— Mode —</option>
           ${modes.map(m=>`<option>${m}</option>`).join('')}
         </select>
       </div>
-      <div class="fpg"><label class="fpl">Point Earned</label><input class="fpi" id="ep_points" type="number" placeholder="Points"/></div>
+      <div class="fpg"><label class="fpl" for="ep_points">Point Earned</label><input class="fpi" id="ep_points" type="number" placeholder="Points"/></div>
     </div>
-    <div class="fpg"><label class="fpl">Overall Comment</label><textarea class="fpta" id="ep_overall" placeholder="Error details and overall comment..." style="min-height:70px"></textarea></div>
-    <div class="fpg"><label class="fpl">User Comments</label><textarea class="fpta" id="ep_usercomments" placeholder="User's response or comments..." style="min-height:60px"></textarea></div>
-    <div class="fpg"><label class="fpl">Created By</label><input class="fpi auto" id="ep_createdby" readonly/></div>
+    <div class="fpg"><label class="fpl" for="ep_overall">Overall Comment</label><textarea class="fpta" id="ep_overall" placeholder="Error details and overall comment..." style="min-height:70px"></textarea></div>
+    <div class="fpg"><label class="fpl" for="ep_usercomments">User Comments</label><textarea class="fpta" id="ep_usercomments" placeholder="User's response or comments..." style="min-height:60px"></textarea></div>
+    <div class="fpg"><label class="fpl" for="ep_createdby">Created By</label><input class="fpi auto" id="ep_createdby" readonly/></div>
     <input type="hidden" id="ep_edit_idx" value="-1"/>
     <div style="display:flex;gap:10px;margin-top:20px">
       <button class="btn-canc" onclick="closeErrorPanel()">Cancel</button>
@@ -4488,7 +4525,7 @@ function startAudit(rlIdx){
     <!-- Audit By -->
     <div class="frow" style="margin-bottom:0">
       <div class="fpg">
-        <label class="fpl">Audit By <span class="req">*</span></label>
+        <label class="fpl" for="audit_by">Audit By <span class="req">*</span></label>
         <select class="fps" id="audit_by" onchange="auditByChanged()">
           <option value="">— Select Team Lead —</option>
           ${window._auditTLOpts||''}
@@ -4496,7 +4533,7 @@ function startAudit(rlIdx){
         <div class="fnote">⏱️ Audit Start captured when you select</div>
       </div>
       <div class="fpg">
-        <label class="fpl">Error Type <span class="req">*</span></label>
+        <label class="fpl" for="audit_errtype">Error Type <span class="req">*</span></label>
         <select class="fps" id="audit_errtype" onchange="auditErrorTypeChanged()">
           <option value="">— Select Error Type —</option>
           ${window._auditErrOpts||''}
@@ -4506,12 +4543,12 @@ function startAudit(rlIdx){
     <!-- Score auto-fill -->
     <div class="frow" style="margin-bottom:0">
       <div class="fpg">
-        <label class="fpl">Score (%) <span class="req">*</span></label>
+        <label class="fpl" for="audit_score">Score (%) <span class="req">*</span></label>
         <input class="fpi auto" id="audit_score" type="number" min="0" max="100" placeholder="Auto-filled from Error Type" style="font-size:18px;font-weight:800;font-family:var(--mono);text-align:center;color:var(--primary)"/>
         <div class="fnote" id="audit_score_note" style="color:var(--primary);font-weight:600"></div>
       </div>
       <div class="fpg">
-        <label class="fpl">Double Sign <span class="req">*</span></label>
+        <label class="fpl" for="audit_doublesign">Double Sign <span class="req">*</span></label>
         <select class="fps" id="audit_doublesign" onchange="auditDoubleSignChanged()">
           <option value="">— Yes / No —</option>
           <option value="Yes">✅ Yes</option>
@@ -4522,7 +4559,7 @@ function startAudit(rlIdx){
     </div>
     <!-- Comments -->
     <div class="fpg" style="margin-bottom:16px">
-      <label class="fpl">Comments</label>
+      <label class="fpl" for="audit_comments">Comments</label>
       <textarea class="fpta" id="audit_comments" placeholder="Audit observations, quality notes..." style="min-height:70px"></textarea>
     </div>
     <!-- Audit End time display -->
@@ -4917,7 +4954,7 @@ function renderPARSDocs(c){
   <div class="tw">
     <div class="th2"><div class="tt">PARS Docs Records</div><div class="tc" id="pdCount">${all.length} records</div></div>
     <div style="overflow-x:auto"><table class="dt">
-      <thead><tr><th>#</th><th>Mailbox</th><th>Subject</th><th>Mail Rcvd</th><th>Txn</th><th>Client</th><th>Client Name</th><th>Mode</th><th>ETA</th><th>User</th><th>Start</th><th>Created</th><th>Duration</th><th>TAT</th><th>Comments</th></tr></thead>
+      <thead><tr><th>#</th><th>Mailbox</th><th>Subject</th><th>Mail Rcvd</th><th>Txn</th><th>Client</th><th>Client Name</th><th>Mode</th><th>ETA</th><th>User</th><th>Start</th><th>Created</th><th>Duration</th><th>TAT</th><th>Comments</th><th>Edit</th></tr></thead>
       <tbody id="pdTbody"></tbody>
     </table></div>
   </div>`;
@@ -4944,6 +4981,7 @@ function renderPDRows(data){
     <td class="mono" style="color:var(--sky)">${r.duration||'—'}</td>
     <td>${r.tat&&r.tat.includes('Reached')&&!r.tat.includes('Not')?`<span class="badge b-em">${r.tat}</span>`:`<span class="badge b-ro">${r.tat||'—'}</span>`}</td>
     <td style="font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.comments||'—'}</td>
+    <td><button class="btn-upd" style="background:var(--sky)" onclick="editPARSRecord(${r._idx!==undefined?r._idx:i})">✏️</button></td>
   </tr>`).join('');
   const cnt=document.getElementById('pdCount');if(cnt)cnt.textContent=data.length+' records';
 }
@@ -4963,8 +5001,46 @@ function clearPDFilter(){
   renderPDRows(DB.parsDocs);
 }
 
+function editPARSRecord(idx){
+  const r=DB.parsDocs[idx]; if(!r) return;
+  // Open panel and fill all fields including duration — don't reset parsDocsStart
+  const sel=document.getElementById('pd_user');
+  sel.innerHTML='<option value="">— Select User —</option>'+[...DB.users,...DB.loginUsers.filter(u=>u.task==='PARS Docs Clerk'&&u.active!==false)].filter((u,i,a)=>a.findIndex(x=>x.name===u.name)===i).map(u=>`<option value="${u.name}">${u.name}</option>`).join('');
+
+  document.getElementById('pd_mailbox').value = r.mailbox||'';
+  document.getElementById('pd_subject').value  = r.subject||'';
+  document.getElementById('pd_mailrcvd').value = r.mailrcvd||'';
+  document.getElementById('pd_start').value    = r.start||'';
+  document.getElementById('pd_txn').value      = r.txn||'';
+  document.getElementById('pd_client').value   = r.client||'';
+  document.getElementById('pd_clientname').value = r.clientname||'';
+  document.getElementById('pd_team').value     = r.team||'';
+  document.getElementById('pd_mode').value     = r.mode||'';
+  document.getElementById('pd_created').value  = r.created||'';
+  document.getElementById('pd_duration').value = r.duration||'';  // ← preserve duration
+  document.getElementById('pd_tat').value      = r.tat||'';
+  document.getElementById('pd_comments').value = r.comments||'';
+
+  // Set ETA — convert display string back to datetime-local format
+  const etaEl=document.getElementById('pd_eta');
+  if(etaEl && r.eta && r.eta!=='—'){
+    try{
+      const d=new Date(r.eta); if(!isNaN(d)) etaEl.value=d.toISOString().slice(0,16);
+    } catch(e){}
+  }
+  if(sel.querySelector(`option[value="${r.user||''}"]`)) sel.value=r.user||'';
+
+  // Store edit index so submitPARSDocs knows this is an update
+  document.getElementById('pd_edit_idx').value=idx;
+  parsDocsStart=null; // don't recalculate duration on edit — preserve existing
+  // Don't reset captureEnd — duration already filled from existing record
+  pdCalcTATAnalytics(); // show TAT result using existing created_time vs ETA
+  openPanel('parsDocsPanel');
+}
+
 function openPARSDocs(){
   ['pd_subject','pd_mailrcvd','pd_start','pd_txn','pd_client','pd_clientname','pd_team','pd_eta','pd_created','pd_duration','pd_tat','pd_comments'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('pd_edit_idx').value='';
   // Reset Comments badge
   const rdBadge=document.getElementById('pd_cmt_req_badge');if(rdBadge)rdBadge.style.display='none';
   document.getElementById('pd_mailbox').value='';
@@ -5030,37 +5106,69 @@ function pdMailboxChange(){
 }
 
 function pdCalcTATAnalytics(){
-  const mailRcvdStr=document.getElementById('pd_mailrcvd').value;
-  const etaEl=document.getElementById('pd_eta');
-  const etaStr=etaEl?.value;
-  const analyticsEl=document.getElementById('pd_tat_analytics');
-  const tatcmtGrp=document.getElementById('pd_tatcmt_grp');
-  if(!analyticsEl)return;
-  if(!mailRcvdStr||!etaStr){analyticsEl.textContent='Enter Mail Received & ETA to see TAT analytics';analyticsEl.style.color='var(--text3)';return;}
-  const rcvd=new Date(mailRcvdStr.replace(/(\d{2})-(\d{2})-(\d{4})/,'$3-$2-$1'));
-  const eta=new Date(etaStr);
-  if(isNaN(rcvd)||isNaN(eta)){analyticsEl.textContent='Invalid date format';return;}
-  const diffMs=eta-rcvd;
-  const diffHrs=Math.abs(diffMs/3600000).toFixed(2);
-  const isMore2hrs=Math.abs(diffMs)>7200000;
-  const tatReached=diffMs>=0;// ETA is after mail received
-  let txt='';
-  if(diffMs>=0){
-    txt=`📬 Mail rcvd → ETA: ${diffHrs} hrs ${isMore2hrs?'(>2 hrs gap)':'(≤2 hrs gap)'} · `;
-    txt+=tatReached?'✅ TAT Reached (ETA after mail)':'❌ TAT Not Reached';
+  // TAT Logic:
+  // - Primary: created_time (work completed) vs ETA (deadline) → TAT Reached if completed <= ETA
+  // - Fallback (no ETA, or COURIER HVS): mail_received → created_time <= 1 hour
+  const mailRcvdStr  = document.getElementById('pd_mailrcvd').value;
+  const etaStr       = document.getElementById('pd_eta')?.value;
+  const createdStr   = document.getElementById('pd_created').value;
+  const mailbox      = document.getElementById('pd_mailbox').value;
+  const analyticsEl  = document.getElementById('pd_tat_analytics');
+  const reqBadge     = document.getElementById('pd_cmt_req_badge');
+  const cmtEl        = document.getElementById('pd_comments');
+  if(!analyticsEl) return;
+
+  // Parse dates
+  const parseDate = s => {
+    if(!s) return null;
+    const d = new Date(s.replace(/(\d{2})-(\d{2})-(\d{4})/,'$3-$2-$1'));
+    return isNaN(d) ? null : d;
+  };
+  const rcvd    = parseDate(mailRcvdStr);
+  const eta     = parseDate(etaStr);
+  const created = parseDate(createdStr) || new Date(); // use now if not yet captured
+
+  let tatReached = false;
+  let txt = '';
+
+  if(etaStr && eta && mailbox !== 'COURIER HVS'){
+    // ── ETA-based TAT: work done before deadline? ──
+    const doneMs   = created - (rcvd || created); // duration so far
+    const windowMs = eta - (rcvd || eta);          // total allowed window
+    tatReached = created <= eta;
+    const doneHrs  = (Math.abs(created - (rcvd||created)) / 3600000).toFixed(2);
+    const windowHrs= eta && rcvd ? Math.abs((eta - rcvd) / 3600000).toFixed(2) : '?';
+    if(tatReached){
+      txt = `✅ TAT Reached — completed ${doneHrs} hrs after mail rcvd · ETA window: ${windowHrs} hrs`;
+    } else {
+      const overMs  = created - eta;
+      const overMin = Math.round(overMs / 60000);
+      txt = `❌ TAT Not Reached — exceeded ETA by ${overMin} min (${(overMs/3600000).toFixed(2)} hrs)`;
+    }
+  } else if(rcvd){
+    // ── 1-hour fallback rule ──
+    const ms = created - rcvd;
+    tatReached = ms <= 3600000;
+    const mins = Math.round(ms / 60000);
+    txt = tatReached
+      ? `✅ TAT Reached — ${mins} min from mail received (≤ 60 min)`
+      : `❌ TAT Not Reached — ${mins} min from mail received (> 60 min)`;
   } else {
-    txt=`⚠️ ETA is BEFORE mail received by ${diffHrs} hrs · ❌ TAT Not Reached`;
+    analyticsEl.textContent = 'Enter Mail Received date to calculate TAT';
+    analyticsEl.style.color = 'var(--text3)';
+    analyticsEl.style.background = 'var(--surface2)';
+    return;
   }
-  analyticsEl.textContent=txt;
-  analyticsEl.style.color=tatReached?'var(--emerald)':'var(--rose)';
-  analyticsEl.style.background=tatReached?'var(--emerald-bg)':'var(--rose-bg)';
-  // Show/hide Required badge on Comments field
-  const reqBadge=document.getElementById('pd_cmt_req_badge');
-  if(reqBadge) reqBadge.style.display=tatReached?'none':'inline-block';
-  const cmtEl=document.getElementById('pd_comments');
-  if(cmtEl) cmtEl.placeholder=tatReached?'Optional comments...':'Required — please explain reason for TAT not reached...';
-  // Store TAT result
-  document.getElementById('pd_tat')&&(document.getElementById('pd_tat').value=tatReached?'TAT Reached ✅':'TAT Not Reached ❌');
+
+  analyticsEl.textContent  = txt;
+  analyticsEl.style.color  = tatReached ? 'var(--emerald)' : 'var(--rose)';
+  analyticsEl.style.background = tatReached ? 'var(--emerald-bg)' : 'var(--rose-bg)';
+  if(reqBadge) reqBadge.style.display = tatReached ? 'none' : 'inline-block';
+  if(cmtEl)    cmtEl.placeholder      = tatReached ? 'Optional comments...' : 'Required — explain reason for TAT not reached...';
+
+  // Write result into hidden TAT field
+  const tatEl = document.getElementById('pd_tat');
+  if(tatEl) tatEl.value = tatReached ? 'TAT Reached ✅' : 'TAT Not Reached ❌';
 }
 
 function vTxnPD(el){
@@ -5074,13 +5182,17 @@ function vTxnPD(el){
 function lookupClientPD(el){ fillClient(el.value,'pd_clientname','pd_team'); }
 
 function pdCaptureCreation(){
-  const now=new Date();
+  const now = new Date();
   if(captureEndOnce('pars')){
-    document.getElementById('pd_created').value=nowStr();
-    if(parsDocsStart) document.getElementById('pd_duration').value=calcDuration(parsDocsStart,now);
+    // Set created time first so pdCalcTATAnalytics can use it
+    document.getElementById('pd_created').value = nowStr();
+    // Only recalculate duration if timer was actively running (new entry, not edit)
+    if(parsDocsStart){
+      document.getElementById('pd_duration').value = calcDuration(parsDocsStart, now);
+    }
   }
-  const mailRcvd=document.getElementById('pd_mailrcvd').value;
-  document.getElementById('pd_tat').value=calcTATOneHour(mailRcvd,now);
+  // Now recalculate TAT using the just-set created_time vs ETA
+  pdCalcTATAnalytics();
 }
 
 function submitPARSDocs(){
@@ -5099,7 +5211,24 @@ function submitPARSDocs(){
   const etaDisplay=etaRaw?new Date(etaRaw).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
   const _parsRow={mailbox:document.getElementById('pd_mailbox').value,subject,mailrcvd:document.getElementById('pd_mailrcvd').value,start_time:document.getElementById('pd_start').value,txn,client:document.getElementById('pd_client').value,client_name:document.getElementById('pd_clientname').value,team:document.getElementById('pd_team').value,mode:document.getElementById('pd_mode').value,eta:etaDisplay,user_name:user,created_time:document.getElementById('pd_created').value||nowStr(),duration:document.getElementById('pd_duration').value||'00:00:00',tat:tatVal,comments:document.getElementById('pd_comments').value};
   const _parsLocal={mailbox:_parsRow.mailbox,subject,mailrcvd:_parsRow.mailrcvd,start:_parsRow.start_time,txn:_parsRow.txn,client:_parsRow.client,clientname:_parsRow.client_name,team:_parsRow.team,mode:_parsRow.mode,eta:_parsRow.eta,user:_parsRow.user_name,created:_parsRow.created_time,duration:_parsRow.duration,tat:_parsRow.tat,comments:_parsRow.comments,_created:new Date().toISOString(),_submitRaw:new Date()};
-  dbInsertOptimistic(_parsLocal,'pars_docs',_parsRow,mapPARSDocs,DB.parsDocs,'parsdocs');
+  const editIdx=parseInt(document.getElementById('pd_edit_idx')?.value);
+  if(!isNaN(editIdx)&&editIdx>=0&&editIdx<DB.parsDocs.length){
+    // UPDATE existing record — preserve duration
+    const existing=DB.parsDocs[editIdx];
+    _parsLocal.duration = _parsLocal.duration||existing.duration||'00:00:00';
+    _parsRow.duration   = _parsLocal.duration;
+    _parsLocal._created = existing._created;
+    _parsLocal._submitRaw = existing._submitRaw;
+    DB.parsDocs[editIdx]={...existing,..._parsLocal,_idx:editIdx};
+    if(_supa&&existing._dbid) dbUpdate('pars_docs',existing._dbid,_parsRow).then(()=>showToast('✅ PARS record updated!')).catch(()=>showToast('✅ Updated locally'));
+    else showToast('✅ PARS record updated!');
+    document.getElementById('pd_edit_idx').value='';
+    parsDocsStart=null;
+    closePanel('parsDocsPanel');
+    showPage('parsdocs');
+  } else {
+    dbInsertOptimistic(_parsLocal,'pars_docs',_parsRow,mapPARSDocs,DB.parsDocs,'parsdocs');
+  }
 }
 
 function exportPARSDocs(){
