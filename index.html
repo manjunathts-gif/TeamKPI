@@ -431,12 +431,25 @@ const SUPA_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 
 // Anon client — used by all regular users for data reads/writes
 const _supa = (SUPA_URL !== 'YOUR_SUPABASE_URL')
-  ? supabase.createClient(SUPA_URL, SUPA_ANON)
+  ? supabase.createClient(SUPA_URL, SUPA_ANON, {
+      auth: {
+        storageKey: 'kpi-app-anon',   // unique key — prevents multiple-client warning
+        persistSession: true,
+        autoRefreshToken: true,
+      }
+    })
   : null;
 
 // Service client — used ONLY by Admin for user management (bypasses RLS)
+// persistSession:false + unique storageKey prevents the GoTrueClient duplicate warning
 const _supaAdmin = (SUPA_URL !== 'YOUR_SUPABASE_URL' && SUPA_SERVICE_KEY !== 'YOUR_SERVICE_ROLE_KEY')
-  ? supabase.createClient(SUPA_URL, SUPA_SERVICE_KEY, {auth:{persistSession:false}})
+  ? supabase.createClient(SUPA_URL, SUPA_SERVICE_KEY, {
+      auth: {
+        storageKey: 'kpi-app-admin',  // different key from _supa
+        persistSession: false,        // admin client never persists session
+        autoRefreshToken: false,
+      }
+    })
   : _supa; // fallback to anon if service key not set
 
 if(!_supa) console.warn('⚠️ Supabase not configured — running in local mode');
@@ -836,8 +849,8 @@ function setupRealtime(){
     <button class="btn-login" id="loginBtn" onclick="doLogin()">Sign In →</button>
     <div id="lDbStatus" style="text-align:center;font-size:12px;color:#64748b;padding:6px 0;min-height:18px;margin-top:6px"></div>
     <div class="login-err" id="lErr">⚠️ Invalid credentials. Please check username and password.</div>
-    <div style="margin-top:14px;padding:10px 14px;background:var(--primary-bg);border:1px solid rgba(37,99,235,.2);border-radius:var(--radius);font-size:11px;color:var(--text3);text-align:center">
-      Admin: <b style="color:var(--primary)">admin / admin@123</b> &nbsp;·&nbsp; Other users login with credentials assigned by Admin
+    <div style="margin-top:14px;font-size:11px;color:var(--text3);text-align:center">
+      Contact your Admin for login credentials
     </div>
   </div>
 </div>
@@ -1858,7 +1871,22 @@ function setupRealtime(){
 // LOGIN USERS — Managed via Admin > Login Users tab
 // Admin is hardcoded. All others come from DB.loginUsers
 // ══════════════════════════════════════════════════════════
-const ADMIN_CREDS = {username:'admin', password:'admin@123', name:'Admin User', task:'Manager', role:'Manager'};
+// Admin credentials — password is stored as SHA-256 hash (not plain text)
+// To change: run this in browser console:  hashPwd('yournewpassword')
+// Then paste the result as ADMIN_PWD_HASH below
+const ADMIN_UNAME = btoa('admin');           // change 'admin' to your username
+const ADMIN_DNAME = 'Admin User';            // change display name
+const ADMIN_PWD_HASH = '0b7f849446d3383546d15a480966084442af7538bae2f16396b6bca09d8c30cd'; // SHA-256 of 'admin@123'
+
+async function hashPwd(pwd){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkAdminPwd(pwd){
+  const h = await hashPwd(pwd);
+  return h === ADMIN_PWD_HASH;
+}
 
 const TASK_ROLE_MAP = {
   'Manager':'Manager','LVS':'Co-ordinator','Classifier':'Co-ordinator',
@@ -1869,7 +1897,7 @@ const TASK_ROLE_MAP = {
 
 const DB = {
   users:[
-    {id:1,username:'admin',  name:'Admin User',   role:'Manager',   task:'Manager',   team:'ALL'},
+    {id:1,username:atob(ADMIN_UNAME), name:ADMIN_DNAME, role:'Manager', task:'Manager', team:'ALL'},
     {id:2,username:'coord1', name:'Priya Sharma', role:'Co-ordinator',task:'LVS',     team:'A'},
     {id:3,username:'coord2', name:'Rahul Mehta',  role:'Co-ordinator',task:'LVS',     team:'B'},
     {id:4,username:'lvs',    name:'LVS Team',     role:'Co-ordinator',task:'LVS',     team:'A'},
@@ -2005,8 +2033,11 @@ async function doLogin(){
   err.style.display='none';
 
   // ── Admin: hardcoded, always works ──────────────────────
-  if(u===ADMIN_CREDS.username&&p===ADMIN_CREDS.password){
-    CU={username:u,name:ADMIN_CREDS.name,task:'Manager',role:'Manager',team:'ALL'};
+  // Admin check — compare against hashed password
+  const _adminUname = atob(ADMIN_UNAME);
+  const _adminMatch = u === _adminUname && await checkAdminPwd(p);
+  if(_adminMatch){
+    CU={username:u,name:ADMIN_DNAME,task:'Manager',role:'Manager',team:'ALL'};
     // Always load all data for admin with loading overlay
     if(_supa){
       const overlay=document.getElementById('loadingOverlay');
