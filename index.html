@@ -417,6 +417,30 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   display:flex;align-items:center;gap:7px;font-weight:500;}
 
 @media(max-width:768px){.spanel{width:100%;}.sg{grid-template-columns:1fr 1fr;}.frow{grid-template-columns:1fr;}}
+
+/* ══ IDLE TRACKER ══ */
+#idleOverlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,.78);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+#idleOverlay.show{display:flex;}
+.idle-card{background:#fff;border-radius:20px;padding:36px 32px;max-width:460px;width:90%;box-shadow:0 24px 80px rgba(0,0,0,.25);border:3px solid #f59e0b;animation:idlePop .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes idlePop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.idle-icon{font-size:48px;text-align:center;margin-bottom:12px;}
+.idle-title{font-family:var(--sans);font-size:20px;font-weight:800;color:#1a1208;text-align:center;margin-bottom:6px;}
+.idle-sub{font-size:13px;color:#78716c;text-align:center;margin-bottom:20px;line-height:1.6;}
+.idle-timer-box{display:flex;align-items:center;justify-content:center;gap:10px;background:#fef9ec;border:1px solid #fcd34d;border-radius:10px;padding:10px 16px;margin-bottom:20px;}
+.idle-timer-val{font-family:var(--mono);font-size:24px;font-weight:800;color:#d97706;letter-spacing:2px;}
+.idle-timer-lbl{font-size:11px;color:#a16207;}
+.idle-reasons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.idle-rbtn{padding:10px 8px;border:1.5px solid #e5e7eb;border-radius:10px;background:#f9fafb;font-size:12px;font-weight:600;color:#374151;cursor:pointer;transition:all .15s;text-align:center;font-family:var(--sans);}
+.idle-rbtn:hover,.idle-rbtn.sel{background:#fef3c7;border-color:#f59e0b;color:#b45309;}
+.idle-other-wrap{margin-bottom:14px;}
+.idle-other-wrap textarea{width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 12px;font-size:13px;color:#374151;font-family:var(--sans);outline:none;resize:none;height:68px;transition:border .2s;box-sizing:border-box;}
+.idle-other-wrap textarea:focus{border-color:#f59e0b;}
+.idle-submit-btn{width:100%;background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;font-family:var(--sans);cursor:pointer;transition:opacity .15s;}
+.idle-submit-btn:disabled{opacity:.45;cursor:not-allowed;}
+#idleTopBadge{display:none;align-items:center;gap:5px;background:#fef3c7;border:1px solid #fcd34d;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:#b45309;cursor:pointer;}
+#idleTopBadge.show{display:flex;}
+.idle-log-row{background:#fffbeb;}
+.idle-log-row:hover{background:#fef3c7;}
 </style>
 
 <!-- ═══ SUPABASE CLIENT ═══ -->
@@ -876,6 +900,9 @@ function setupRealtime(){
         </div>
       </div>
       <span class="task-tag" id="taskTag"></span>
+      <div id="idleTopBadge" title="You have been idle — click to report" onclick="showIdlePopup()">
+        ⏱ Idle: <span id="idleTopTime">--:--</span>
+      </div>
       <button class="btn-out" onclick="doLogout()">Sign out</button>
     </div>
   </div>
@@ -2026,6 +2053,7 @@ async function doLogin(){
   const _adminMatch = u === _adminUname && await checkAdminPwd(p);
   if(_adminMatch){
     CU={username:u,name:ADMIN_DNAME,task:'Manager',role:'Manager',team:'ALL'};
+    loadIdleLog();
     // Always load all data for admin with loading overlay
     if(_supa){
       const overlay=document.getElementById('loadingOverlay');
@@ -2092,6 +2120,7 @@ async function doLogin(){
 }
 
 function doLogout(){
+  idleStop(); // stop idle tracker on logout
   CU=null;selectedTask='';
   document.getElementById('appShell').style.display='none';
   document.getElementById('loginPage').style.display='flex';
@@ -3159,6 +3188,39 @@ function renderDashboard(c){
       </table></div>`;
     })()}
   </div>
+
+  <div class="dash-table-wrap" style="margin-top:20px">
+    <div class="dash-table-hdr">
+      <div class="dash-table-title">⏸️ Idle / Inactivity Log</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <input type="date" id="idle_fd" value="${now.toISOString().slice(0,10)}"
+          style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--text);outline:none;cursor:pointer"
+          onchange="refreshIdleTable()"/>
+        <input id="idle_fq" placeholder="Search user / reason"
+          style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text);outline:none;min-width:160px"
+          oninput="refreshIdleTable()"/>
+        <button onclick="loadIdleLog().then(refreshIdleTable)"
+          style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2)">🔄 Refresh</button>
+        <button onclick="exportIdleLog()"
+          style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer">⬇️ Export CSV</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="dash-dt">
+        <thead><tr>
+          <th>#</th><th>User</th><th>Task</th><th>Team</th>
+          <th>Idle Start</th><th>Idle End</th>
+          <th style="text-align:center">Duration</th>
+          <th>Reason</th><th>Date</th>
+        </tr></thead>
+        <tbody id="idleLogBody">${buildIdleRows(now.toISOString().slice(0,10),'')}</tbody>
+      </table>
+    </div>
+    <div style="padding:10px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)">
+      💡 Popup fires after 30 min of no activity. User must submit reason before resuming. Duration ≥60 min shown in red.
+    </div>
+  </div>
+
   `;
 }
 
@@ -6229,6 +6291,263 @@ function exportB2(){
   exportCSV(rows,headers,`B2Entries_${new Date().toISOString().slice(0,10)}.csv`);
 }
 
+
+
+// ══ IDLE ENGINE ══
+// ════════════════════════════════════════════════════════════════════════
+// IDLE ACTIVITY TRACKER ENGINE
+// - Tracks last user interaction time
+// - Popup fires after 30 min inactivity
+// - Saves record to DB.idleLog + Supabase activity_log table
+// - Zero background DB writes — only writes when popup answered
+// - No performance impact on forms or data
+// ════════════════════════════════════════════════════════════════════════
+
+const IDLE_MS      = 30 * 60 * 1000; // 30 min threshold
+const IDLE_WARN_MS = 25 * 60 * 1000; // show badge at 25 min
+
+let _lastAct      = Date.now();
+let _idleShown    = false;
+let _idleStart    = null;
+let _idleInterval = null;
+let _idleElInt    = null;
+let _chosenReason = '';
+
+if(!window.DB) window.DB = {};
+DB.idleLog = [];
+
+// ── Reset on any real user interaction ──
+function _touch(){
+  _lastAct = Date.now();
+  if(!_idleShown){
+    const b = document.getElementById('idleTopBadge');
+    if(b) b.classList.remove('show');
+  }
+}
+['mousedown','keydown','touchstart','click','input','change','scroll'].forEach(e=>{
+  document.addEventListener(e, _touch, {passive:true});
+});
+
+// ── Format ms → MM:SS ──
+function _fmt(ms){
+  const s=Math.floor(ms/1000), m=Math.floor(s/60);
+  return String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+}
+
+// ── Main idle check — every 30s ──
+function _checkIdle(){
+  if(!CU || _idleShown) return;
+  const gap = Date.now() - _lastAct;
+  const badge = document.getElementById('idleTopBadge');
+  const badgeTime = document.getElementById('idleTopTime');
+
+  // Show badge when approaching threshold
+  if(gap >= IDLE_WARN_MS && badge){
+    badge.classList.add('show');
+    if(badgeTime) badgeTime.textContent = _fmt(gap);
+  }
+  // Trigger popup
+  if(gap >= IDLE_MS){
+    _idleStart = new Date(Date.now() - gap);
+    showIdlePopup();
+  }
+}
+
+// ── Show popup ──
+function showIdlePopup(){
+  if(_idleShown) return;
+  _idleShown = true;
+  const gap = Date.now() - _lastAct;
+  const minTxt = document.getElementById('idleMinTxt');
+  if(minTxt) minTxt.textContent = Math.floor(gap/60000);
+
+  const overlay = document.getElementById('idleOverlay');
+  if(overlay) overlay.classList.add('show');
+
+  // Reset form
+  _chosenReason = '';
+  document.querySelectorAll('.idle-rbtn').forEach(b=>b.classList.remove('sel'));
+  const ow = document.getElementById('idleOtherWrap');
+  const ot = document.getElementById('idleOtherTxt');
+  const sb = document.getElementById('idleSubmitBtn');
+  if(ow){ ow.style.display='none'; }
+  if(ot){ ot.value=''; }
+  if(sb){ sb.disabled=true; }
+
+  // Live elapsed counter
+  const el = document.getElementById('idleElapsed');
+  if(_idleElInt) clearInterval(_idleElInt);
+  _idleElInt = setInterval(()=>{
+    const g = Date.now() - _lastAct;
+    if(el) el.textContent = _fmt(g);
+    const bt = document.getElementById('idleTopTime');
+    if(bt) bt.textContent = _fmt(g);
+  }, 1000);
+}
+
+// ── Pick reason ──
+function pickReason(btn, reason){
+  document.querySelectorAll('.idle-rbtn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  _chosenReason = reason;
+  const ow = document.getElementById('idleOtherWrap');
+  const sb = document.getElementById('idleSubmitBtn');
+  if(ow) ow.style.display = reason==='Other' ? 'block' : 'none';
+  if(sb) sb.disabled = false;
+}
+
+// ── Submit reason ──
+async function submitIdle(){
+  let reason = _chosenReason;
+  if(!reason){ showToast('⚠️ Please select a reason',true); return; }
+  if(reason==='Other'){
+    const t = (document.getElementById('idleOtherTxt')?.value||'').trim();
+    if(!t){ showToast('⚠️ Please describe the reason',true); return; }
+    reason = 'Other: ' + t;
+  }
+
+  const endTime  = new Date();
+  const startTime = _idleStart || new Date(Date.now()-IDLE_MS);
+  const durMins  = Math.max(1, Math.round((endTime-startTime)/60000));
+
+  const rec = {
+    user_name    : CU.name,
+    username     : CU.username,
+    task         : CU.task,
+    team         : CU.team||'—',
+    idle_start   : startTime.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),
+    idle_end     : endTime.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),
+    duration_mins: durMins,
+    reason       : reason,
+    log_date     : new Date().toISOString().slice(0,10),
+    created_at   : new Date().toISOString(),
+  };
+
+  // Save locally
+  DB.idleLog.unshift({...rec, _lid: Date.now()});
+
+  // Save to Supabase (non-blocking)
+  if(_supa){
+    _supa.from('activity_log').insert([rec])
+      .then(({error})=>{ if(error) console.warn('idle log save:',error.message); })
+      .catch(e=>console.warn('idle log:',e.message));
+  }
+
+  // Close popup
+  _idleShown = false;
+  _lastAct   = Date.now();
+  _idleStart = null;
+  if(_idleElInt){ clearInterval(_idleElInt); _idleElInt=null; }
+  const overlay = document.getElementById('idleOverlay');
+  if(overlay) overlay.classList.remove('show');
+  const badge = document.getElementById('idleTopBadge');
+  if(badge) badge.classList.remove('show');
+
+  showToast('✅ Idle reason recorded — thank you!');
+}
+
+// ── Stop tracker on logout ──
+function idleStop(){
+  if(_idleInterval){ clearInterval(_idleInterval); _idleInterval=null; }
+  if(_idleElInt){ clearInterval(_idleElInt); _idleElInt=null; }
+  _idleShown=false; _lastAct=Date.now();
+}
+
+// ── Load today's idle log from Supabase (for admin dashboard) ──
+async function loadIdleLog(){
+  DB.idleLog=[];
+  if(!_supa) return;
+  try{
+    const today=new Date().toISOString().slice(0,10);
+    const {data,error}=await _supa.from('activity_log')
+      .select('*').gte('log_date',today)
+      .order('created_at',{ascending:false}).limit(500);
+    if(!error && data) DB.idleLog=data.map(r=>({
+      user_name:r.user_name, username:r.username, task:r.task,
+      team:r.team, idle_start:r.idle_start, idle_end:r.idle_end,
+      duration_mins:r.duration_mins, reason:r.reason,
+      log_date:r.log_date, created_at:r.created_at, _lid:r.id
+    }));
+  }catch(e){ console.warn('loadIdleLog:',e.message); }
+}
+
+// ── Build idle log table rows ──
+function buildIdleRows(dateStr, q){
+  let data=[...DB.idleLog];
+  if(dateStr) data=data.filter(r=>(r.log_date||'').slice(0,10)===dateStr);
+  const sq=(q||'').toLowerCase().trim();
+  if(sq) data=data.filter(r=>
+    (r.user_name||'').toLowerCase().includes(sq)||
+    (r.username||'').toLowerCase().includes(sq)||
+    (r.reason||'').toLowerCase().includes(sq)||
+    (r.task||'').toLowerCase().includes(sq)
+  );
+  if(!data.length) return '<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text3)">No idle records for this date — great productivity! ✅</td></tr>';
+  return data.map((r,i)=>{
+    const m=r.duration_mins||0;
+    const clr=m>=60?'#dc2626':m>=45?'#d97706':m>=30?'#f59e0b':'#059669';
+    const bg =m>=60?'#fee2e2':'#fef9ec';
+    return '<tr class="idle-log-row">'
+      +'<td style="padding:8px 12px;color:var(--text3);font-size:11px">'+(i+1)+'</td>'
+      +'<td style="padding:8px 12px;font-weight:700">'+(r.user_name||'—')+'</td>'
+      +'<td style="padding:8px 12px"><span class="badge b-in">'+(r.task||'—')+'</span></td>'
+      +'<td style="padding:8px 12px;font-size:11px">'+(r.team||'—')+'</td>'
+      +'<td style="padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--text3)">'+(r.idle_start||'—')+'</td>'
+      +'<td style="padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--text3)">'+(r.idle_end||'—')+'</td>'
+      +'<td style="text-align:center;padding:8px 12px"><span style="font-family:var(--mono);font-weight:800;color:'+clr+';background:'+bg+';padding:3px 10px;border-radius:20px;font-size:12px">'+m+' min'+(m>=60?' ⚠️':'')+'</span></td>'
+      +'<td style="padding:8px 12px;font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.reason||'—')+'</td>'
+      +'<td style="padding:8px 12px;font-size:11px;color:var(--text3)">'+(r.log_date||'').slice(0,10)+'</td>'
+      +'</tr>';
+  }).join('');
+}
+
+function refreshIdleTable(){
+  const d=document.getElementById('idle_fd')?.value||new Date().toISOString().slice(0,10);
+  const q=document.getElementById('idle_fq')?.value||'';
+  const b=document.getElementById('idleLogBody');
+  if(b) b.innerHTML=buildIdleRows(d,q);
+}
+
+function exportIdleLog(){
+  if(!DB.idleLog.length){ showToast('⚠️ No idle records to export',true); return; }
+  const hdr=['User','Username','Task','Team','Idle Start','Idle End','Duration (mins)','Reason','Date'];
+  const rows=DB.idleLog.map(r=>[
+    '"'+r.user_name+'"',r.username,r.task,r.team||'—',
+    '"'+r.idle_start+'"','"'+r.idle_end+'"',
+    r.duration_mins,'"'+r.reason+'"',r.log_date
+  ].join(','));
+  exportCSV(rows,hdr,'IdleLog_'+new Date().toISOString().slice(0,10)+'.csv');
+}
+
+// ── Start check interval ONLY when user is logged in ──
+_idleInterval = setInterval(()=>{ if(CU) _checkIdle(); }, 30000);
+
+
 </script>
+
+<!-- ═══ IDLE ACTIVITY POPUP ═══ -->
+<div id="idleOverlay">
+  <div class="idle-card">
+    <div class="idle-icon">⏸️</div>
+    <div class="idle-title">No Activity Detected</div>
+    <div class="idle-sub">You have been idle for <strong id="idleMinTxt">30</strong> minutes.<br>Please select a reason so your supervisor can track it.</div>
+    <div class="idle-timer-box">
+      <span class="idle-timer-lbl">Total idle time:</span>
+      <span class="idle-timer-val" id="idleElapsed">00:00</span>
+    </div>
+    <div class="idle-reasons">
+      <button class="idle-rbtn" onclick="pickReason(this,'Lunch Break')">🍽️ Lunch Break</button>
+      <button class="idle-rbtn" onclick="pickReason(this,'Tea / Coffee Break')">☕ Tea / Coffee Break</button>
+      <button class="idle-rbtn" onclick="pickReason(this,'Personal Break')">🚶 Personal Break</button>
+      <button class="idle-rbtn" onclick="pickReason(this,'System / IT Issue')">💻 System / IT Issue</button>
+      <button class="idle-rbtn" onclick="pickReason(this,'Training / Meeting')">📋 Training / Meeting</button>
+      <button class="idle-rbtn" onclick="pickReason(this,'Other')">✏️ Other (specify below)</button>
+    </div>
+    <div class="idle-other-wrap" id="idleOtherWrap" style="display:none">
+      <textarea id="idleOtherTxt" placeholder="Please describe reason for inactivity..."></textarea>
+    </div>
+    <button class="idle-submit-btn" id="idleSubmitBtn" onclick="submitIdle()" disabled>✅ Submit &amp; Resume Work</button>
+  </div>
+</div>
 </body>
 </html>
